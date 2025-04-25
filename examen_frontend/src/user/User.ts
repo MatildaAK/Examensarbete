@@ -2,10 +2,16 @@ import BASE_URL from "../config";
 import { User } from "../Interfaces/Types";
 
 export const createUser = async (name: string, email: string) => {
+  
+  const token = localStorage.getItem("token");
+  const tenant = localStorage.getItem("tenant");
+
   const res = await fetch(`${BASE_URL}/users`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+      "X-Tenant": `${tenant}`,
     },
     body: JSON.stringify({ user: { name, email } }),
   });
@@ -19,10 +25,16 @@ export const createUser = async (name: string, email: string) => {
 };
 
 export const updateUser = async (id: number, name: string, email: string): Promise<User> => {
+
+  const token = localStorage.getItem("token");
+  const tenant = localStorage.getItem("tenant");
+
   const res = await fetch(`${BASE_URL}/users/${id}`, {
     method: "PUT",
     headers: {
-       "Content-Type": "application/json" 
+       "Content-Type": "application/json",
+       "Authorization": `Bearer ${token}`,
+       "X-Tenant": `${tenant}`, 
     },
     body: JSON.stringify({ user: { name, email }}),
   });

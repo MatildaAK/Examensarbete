@@ -1,16 +1,30 @@
 defmodule ExamenBackendWeb.Router do
   use ExamenBackendWeb, :router
 
+  import ExamenBackendWeb.UserAuth
+
   pipeline :api do
     plug :accepts, ["json"]
+  end
+
+  pipeline :api_auth do
+    plug :fetch_current_user
+    plug :require_authenticated_user
   end
 
   scope "/api", ExamenBackendWeb do
     pipe_through :api
 
+    post "/login", UserSessionController, :create
+    delete "/users/logout", UserSessionController, :delete
+  end
+
+  scope "/api", ExamenBackendWeb do
+    pipe_through [:api]
+
     get "/users", UserController, :index
     get "/users/:id", UserController, :show
-    post "/users", UserController, :create
+    post "/users/new", UserController, :create
     put "/users/:id", UserController, :update
     delete "/users/:id", UserController, :delete
   end

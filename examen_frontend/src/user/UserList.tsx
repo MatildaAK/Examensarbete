@@ -8,6 +8,7 @@ import Container from "../components/core/Container";
 import { createUser } from "./User";
 import UserForm from "./UserFormComponent";
 import { NewUser, User } from "../Interfaces/Types";
+import Back from "../components/core/Back";
 
 const UserList: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -17,7 +18,16 @@ const UserList: React.FC = () => {
 
 
   useEffect(() => {
-    fetch(`${BASE_URL}/users`)
+
+    const token = localStorage.getItem("token");
+    const tenant = localStorage.getItem("tenant");
+
+    fetch(`${BASE_URL}/users`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "X-Tenant": `${tenant}`,
+      }
+    })
       .then((res) => res.json())
       .then((data) => setUsers(data.data));
   }, []);
@@ -32,6 +42,10 @@ const UserList: React.FC = () => {
     <Container className="my-6">
       <h1 className="text-xl font-bold mb-4 text-center">Användare</h1>
 
+      <div className="flex justify-start">
+        <Back>Tillbaka till Lista</Back>
+      </div>
+      
       <div className="p-6 flex justify-end">
         <Button
           onClick={() => setModalOpen(true)}

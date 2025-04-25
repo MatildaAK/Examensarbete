@@ -1,10 +1,29 @@
 import ReactDOM from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import UserList from './user/UserList.tsx';
 import ShowUser from './user/ShowUser.tsx';
 import Home from './Home/Home.tsx';
+import { AuthProvider, useAuth } from './components/Auth/Auth.tsx';
+import Login from './Login/Login.tsx';
+
+interface ProtectedRouteProps {
+  element: React.ReactElement;
+}
+
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
+  const { isAuthenticated, token } = useAuth();
+
+  if (isAuthenticated) {
+    return element;
+  }
+  if (token !== null) {
+    return element;
+  }
+
+  return <Navigate to="/login" />;
+};
 
 const router = createBrowserRouter([
   {
@@ -16,22 +35,28 @@ const router = createBrowserRouter([
     ),
     children: [
       {
+        path: "login",
+        element: <Login />
+      },
+      {
         path: '',
-        element: <Home />
+        element: <ProtectedRoute element={<Home />} />
       },
       {
         path: 'users',
-        element: <UserList />
+        element:  <ProtectedRoute element={<UserList />} />
       },
       {
         path: 'users/:id',
-        element: <ShowUser />
+        element:  <ProtectedRoute element={<ShowUser />} />
       },
     ],
   },
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <RouterProvider router={router} />
+  <AuthProvider>
+    <RouterProvider router={router} />
+  </AuthProvider>
 )
 

@@ -1,7 +1,12 @@
 import React from "react";
 import logo from "../../../../public/elefant.svg"
 
-const Navbar: React.FC = () => {
+interface NavbarProps {
+    isAuthenticated: boolean;
+    onLogout: () => void;
+  }
+  
+const Navbar: React.FC<NavbarProps> = () => {
 
     return(
         <>
