@@ -42,7 +42,7 @@ const Login: React.FC = () => {
   
         if (response.ok) {
           const { user_name, id, token } = data;
-          
+
           onLogin(user_name, id, token, tenant);
   
           localStorage.setItem("token", data.token);
@@ -60,7 +60,6 @@ const Login: React.FC = () => {
         setError(null);
   
       } catch (err) {
-        // Om det uppstår ett fel, sätt felet
         setError("Inloggning misslyckades. Kontrollera dina uppgifter.");
         setSuccess(null);
         console.error("Error during login:", err);

@@ -21,16 +21,20 @@ const UserForm = <T extends User | NewUser>({
   onSubmit,
   submitText = "Spara",
 }: UserFormProps<T>) => {
+  const [user_name, setUserName] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (initialUser) {
       console.log("🔍 initialUser i form:", initialUser);
+      setUserName(initialUser.user_name);
       setName(initialUser.name);
       setEmail(initialUser.email);
+      setPassword(initialUser.password);
     }
   }, [initialUser]);
 
@@ -51,13 +55,15 @@ const UserForm = <T extends User | NewUser>({
     if (initialUser && "id" in initialUser) {
       await onSubmit({
         id: initialUser.id,
-        name,
+        user_name,
         email,
       } as T);
     } else {
       await onSubmit({
-        name,
+        user_name,
         email,
+        password,
+        name,
       } as T);
     }
   } catch (err) {
@@ -70,6 +76,13 @@ const UserForm = <T extends User | NewUser>({
   return (
     <form onSubmit={handleSubmit}>
       {error && <p className="text-thirdColor">{error}</p>}
+      <label htmlFor="name">Användar Namn</label>
+      <Input
+        type="text"
+        value={user_name}
+        onChange={(e) => setUserName(e.target.value)}
+        name="username"
+      />
       <label htmlFor="name">Namn</label>
       <Input
         type="text"
@@ -83,6 +96,13 @@ const UserForm = <T extends User | NewUser>({
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         name="email"
+      />
+      <label htmlFor="name">Lösenord</label>
+      <Input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        name="password"
       />
       <Button
         type="submit"

@@ -42,7 +42,7 @@ const ShowUser: React.FC = () => {
       return;
     }
   
-    const updated = await updateUser(userToSave.id, userToSave.name, userToSave.email);
+    const updated = await updateUser(userToSave.id, userToSave.user_name, userToSave.email);
     setUser(updated);
     setModalOpen(false);
   };
@@ -78,11 +78,11 @@ const ShowUser: React.FC = () => {
         <Back>Tillbaka till Lista</Back>
       </div>
       <h1 className="text-2xl font-bold mb-4 text-start">
-        Användare {user.name}
+        Användare {user.user_name}
       </h1>
       <List
       items={[
-        { title: "Name", value: user.name },
+        { title: "Name", value: user.user_name },
         { title: "Email", value: user.email },
       ]}
       renderSlot={(item) => item.value}

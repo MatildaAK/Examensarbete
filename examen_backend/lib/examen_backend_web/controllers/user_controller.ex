@@ -53,7 +53,7 @@ defmodule ExamenBackendWeb.UserController do
   end
 
   def create(conn, %{"user" => user_params}) do
-    with {:ok, %User{} = user} <- Users.create_user(user_params, [prefix: conn.assign.tenant]) do
+    with {:ok, %User{} = user} <- Users.create_user(user_params, [prefix: conn.assigns.tenant]) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", ~p"/api/users/#{user.id}")
@@ -70,7 +70,7 @@ defmodule ExamenBackendWeb.UserController do
   end
 
   def delete(conn, %{"id" => id}) do
-    user = Users.get_user!(id, [prefix: conn.assign.tenant])
+    user = Users.get_user!(id, [prefix: conn.assigns.tenant])
 
     with {:ok, %User{}} <- Users.delete_user(user) do
       send_resp(conn, :no_content, "")

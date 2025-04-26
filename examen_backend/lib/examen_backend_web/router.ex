@@ -20,11 +20,11 @@ defmodule ExamenBackendWeb.Router do
   end
 
   scope "/api", ExamenBackendWeb do
-    pipe_through [:api]
+    pipe_through [:api, :api_auth]
 
     get "/users", UserController, :index
     get "/users/:id", UserController, :show
-    post "/users/new", UserController, :create
+    post "/users", UserController, :create
     put "/users/:id", UserController, :update
     delete "/users/:id", UserController, :delete
   end

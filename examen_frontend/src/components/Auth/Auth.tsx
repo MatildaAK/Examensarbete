@@ -14,26 +14,35 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userName, setuserName] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(localStorage.getItem("id"));
   const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
   const [tenant, setTenant] = useState<string | null>(localStorage.getItem("tenant"))
 
-  function isTokenExpired(token: string) {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    const currentTime = Math.floor(Date.now() / 1000);
-    return payload.exp < currentTime;
+  function isTokenExpired(token: string | null) {
+    if (!token) return true;
+    const parts = token.split('.');
+    if (parts.length !== 3) return true;
+    try {
+      const payload = JSON.parse(atob(parts[1]));
+      const currentTime = Math.floor(Date.now() / 1000);
+      return payload.exp < currentTime;
+    } catch (error) {
+      console.error("Invalid token", error);
+      return true;
+    }
   }
+  
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
-    const storeduserName = localStorage.getItem("user_name");
+    const storedUserName = localStorage.getItem("user_name");
     const storedUserId = localStorage.getItem("id");
     const storedTenant = localStorage.getItem("tenant");
     
     if (storedToken && !isTokenExpired(storedToken)) {
       setToken(storedToken);
-      setuserName(storeduserName);
+      setUserName(storedUserName);
       setUserId(storedUserId);
       setIsAuthenticated(true);
       setTenant(storedTenant);
@@ -44,7 +53,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = (user_name: string, userId: string, token: string, tenant: string) => {
     setIsAuthenticated(true);
-    setuserName(user_name);
+    setUserName(user_name);
     setUserId(userId);
     setToken(token);
     setTenant(tenant);
@@ -57,7 +66,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = () => {
     setIsAuthenticated(false);
-    setuserName(null);
+    setUserName(null);
     setUserId(null);
     setToken(null);
     setTenant(null);

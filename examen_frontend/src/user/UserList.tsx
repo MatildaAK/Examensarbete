@@ -33,7 +33,7 @@ const UserList: React.FC = () => {
   }, []);
 
   const handleCreateUser = async (newUser: NewUser) => {
-    const created = await createUser(newUser.name, newUser.email);
+    const created = await createUser(newUser.user_name, newUser.email, newUser.password, newUser.name);
     setUsers((prev) => [...prev, created]);
     setModalOpen(false);
   };

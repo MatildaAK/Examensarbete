@@ -1,6 +1,8 @@
 export interface UserBase {
-    name: string;
+    user_name: string;
     email: string;
+    password: string;
+    name: string;
   }
   
   export interface User extends UserBase {

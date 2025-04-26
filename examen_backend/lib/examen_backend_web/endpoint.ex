@@ -44,7 +44,10 @@ defmodule ExamenBackendWeb.Endpoint do
     pass: ["*/*"],
     json_decoder: Phoenix.json_library()
 
-  plug CORSPlug, origin: ["http://localhost:5173"]
+  plug CORSPlug,
+    origin: ["http://localhost:5173"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    headers: ["Authorization", "Content-Type", "X-Tenant"]
 
   plug Plug.MethodOverride
   plug Plug.Head

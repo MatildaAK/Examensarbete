@@ -1,7 +1,7 @@
 import BASE_URL from "../config";
 import { User } from "../Interfaces/Types";
 
-export const createUser = async (name: string, email: string) => {
+export const createUser = async (user_name: string, email: string, password: string, name: string) => {
   
   const token = localStorage.getItem("token");
   const tenant = localStorage.getItem("tenant");
@@ -13,7 +13,7 @@ export const createUser = async (name: string, email: string) => {
       "Authorization": `Bearer ${token}`,
       "X-Tenant": `${tenant}`,
     },
-    body: JSON.stringify({ user: { name, email } }),
+    body: JSON.stringify({ user: { user_name, email, password, name } }),
   });
 
   if (!res.ok) {
@@ -24,7 +24,7 @@ export const createUser = async (name: string, email: string) => {
   return data.data;
 };
 
-export const updateUser = async (id: number, name: string, email: string): Promise<User> => {
+export const updateUser = async (id: number, user_name: string, email: string): Promise<User> => {
 
   const token = localStorage.getItem("token");
   const tenant = localStorage.getItem("tenant");
@@ -36,7 +36,7 @@ export const updateUser = async (id: number, name: string, email: string): Promi
        "Authorization": `Bearer ${token}`,
        "X-Tenant": `${tenant}`, 
     },
-    body: JSON.stringify({ user: { name, email }}),
+    body: JSON.stringify({ user: { user_name, email }}),
   });
 
   if (!res.ok) throw new Error("Misslyckades med att uppdatera användare.");
