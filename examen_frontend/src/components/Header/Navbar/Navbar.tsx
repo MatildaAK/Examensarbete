@@ -1,12 +1,6 @@
-import React from "react";
 import logo from "../../../../public/elefant.svg"
-
-interface NavbarProps {
-    isAuthenticated: boolean;
-    onLogout: () => void;
-  }
   
-const Navbar: React.FC<NavbarProps> = () => {
+const Navbar = () => {
 
     return(
         <>
@@ -16,7 +10,7 @@ const Navbar: React.FC<NavbarProps> = () => {
                     <div>
                         <img src={logo} alt="Logo" className="h-24 w-24" />
                     </div>
-                    <div className="font-bold text-2xl">
+                    <div className="font-bold text-2xl text-primaryColor">
                         React
                     </div>
                 </div>

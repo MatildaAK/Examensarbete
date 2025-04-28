@@ -2,6 +2,7 @@ import { Outlet, useNavigate } from 'react-router-dom'
 import './App.css'
 import Header from './components/Header/Header'
 import { useAuth } from './components/Auth/Auth';
+import Footer from './components/Footer/Footer';
 
 function App() {
   const navigate = useNavigate();
@@ -18,14 +19,15 @@ function App() {
   };
 
   return (
-    <main>
-      <Header isAuthenticated={isAuthenticated} onLogout={handleLogout} />
-      <div className='mx-auto'>
+    <main className='min-h-screen flex flex-col'>
+      <Header />
+      <div className='flex-grow'>
         <Outlet         
            context={{
               onLogin: handleLogin,
             }} />
       </div>
+      <Footer isAuthenticated={isAuthenticated} onLogout={handleLogout} />
     </main>
   );
 };
