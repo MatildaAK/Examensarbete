@@ -3,18 +3,11 @@ import Button from "../components/core/Button";
 import Input from "../components/core/Input";
 import { NewUser, User } from "../Interfaces/Types";
 
-// interface UserFormProps {
-//   initialUser?: User | NewUser;
-//   onSubmit: (user: User | NewUser) => Promise<void>
-//   submitText?: string;
-// }
-
 interface UserFormProps<T extends User | NewUser> {
   initialUser?: T;
   onSubmit: (user: T) => Promise<void>;
   submitText?: string;
 }
-
 
 const UserForm = <T extends User | NewUser>({
   initialUser,
@@ -43,20 +36,14 @@ const UserForm = <T extends User | NewUser>({
     setLoading(true);
     setError("");
 
-  //   try {
-  //     await onSubmit({ id: initialUser?.id, name, email });
-  //   } catch (err) {
-  //     setError("Något gick fel.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   try {
     if (initialUser && "id" in initialUser) {
       await onSubmit({
         id: initialUser.id,
         user_name,
         email,
+        name,
+        password,
       } as T);
     } else {
       await onSubmit({
