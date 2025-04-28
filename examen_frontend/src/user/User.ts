@@ -24,7 +24,7 @@ export const createUser = async (user_name: string, email: string, password: str
   return data.data;
 };
 
-export const updateUser = async (id: number, user_name: string, email: string): Promise<User> => {
+export const updateUser = async (id: number, user_name: string, email: string, name: string, password: string): Promise<User> => {
 
   const token = localStorage.getItem("token");
   const tenant = localStorage.getItem("tenant");
@@ -36,7 +36,7 @@ export const updateUser = async (id: number, user_name: string, email: string): 
        "Authorization": `Bearer ${token}`,
        "X-Tenant": `${tenant}`, 
     },
-    body: JSON.stringify({ user: { user_name, email }}),
+    body: JSON.stringify({ user: { user_name, email, name, password }}),
   });
 
   if (!res.ok) throw new Error("Misslyckades med att uppdatera användare.");
