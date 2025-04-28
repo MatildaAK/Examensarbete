@@ -1,7 +1,17 @@
-#root {
-  max-width: 1280px;
+* {
   margin: 0;
   padding: 0;
   text-align: center;
 }
 
+input[type=text], input[type=password] {
+  border: none;
+  border-bottom: 2px solid #f3f6f7;
+  background: #3bb8be;
+}
+
+input[type=text]:focus, input[type=password]:focus {
+  outline: none;
+  border: none;
+  border-bottom: 4px solid #f3f6f7;
+}
