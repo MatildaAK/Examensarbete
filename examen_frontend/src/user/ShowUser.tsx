@@ -21,7 +21,16 @@ const ShowUser: React.FC = () => {
   useEffect(() => {
     if (!id) return;
 
-    fetch(`${BASE_URL}/users/${id}`)
+    const token = localStorage.getItem('token');
+    const tenant = localStorage.getItem("tenant");
+
+    fetch(`${BASE_URL}/users/${id}`, {
+        method: 'GET',
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "X-Tenant": `${tenant}`,
+        },
+    })
       .then((res) => {
         if (!res.ok) throw new Error("Kunde inte hämta användare");
         return res.json();
@@ -42,7 +51,7 @@ const ShowUser: React.FC = () => {
       return;
     }
   
-    const updated = await updateUser(userToSave.id, userToSave.user_name, userToSave.email);
+    const updated = await updateUser(userToSave.id, userToSave.user_name, userToSave.email, userToSave.name, userToSave.password);
     setUser(updated);
     setModalOpen(false);
   };
@@ -82,7 +91,8 @@ const ShowUser: React.FC = () => {
       </h1>
       <List
       items={[
-        { title: "Name", value: user.user_name },
+        { title: "Namn", value: user.name },
+        { title: "Användar namn", value: user.user_name },
         { title: "Email", value: user.email },
       ]}
       renderSlot={(item) => item.value}
@@ -95,7 +105,7 @@ const ShowUser: React.FC = () => {
           size="small"
           variant="danger"
         >
-          Delete
+          Radera
         </Button>
 
         <Button
@@ -104,7 +114,7 @@ const ShowUser: React.FC = () => {
           variant="primary"
           size="small"
         >
-          Uppdatera användare
+          Uppdatera
         </Button>
         <Modal isOpen={modalOpen} onClose={() => {
           setModalOpen(false);
