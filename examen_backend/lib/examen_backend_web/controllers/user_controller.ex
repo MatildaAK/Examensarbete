@@ -81,7 +81,8 @@ defmodule ExamenBackendWeb.UserController do
     %{
       id: user.id,
       name: user.name,
-      email: user.email
+      email: user.email,
+      user_name: user.user_name
     }
   end
 end
