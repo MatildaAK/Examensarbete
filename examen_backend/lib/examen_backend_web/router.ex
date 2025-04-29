@@ -27,6 +27,18 @@ defmodule ExamenBackendWeb.Router do
     post "/users", UserController, :create
     put "/users/:id", UserController, :update
     delete "/users/:id", UserController, :delete
+
+    get "/hotels", HotelController, :index
+    get "/hotels/:id", HotelController, :show
+    post "/hotels", HotelController, :create
+    put "/hotels/:id", HotelController, :update
+    delete "/hotels/:id", HotelController, :delete
+
+    get "/hotel_rooms", HotelRoomController, :index
+    get "/hotel_rooms/:id", HotelRoomController, :show
+    post "/hotel_rooms", HotelRoomController, :create
+    put "/hotel_rooms/:id", HotelRoomController, :update
+    delete "/hotel_rooms/:id", HotelRoomController, :delete
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

@@ -7,6 +7,8 @@ import ShowUser from './user/ShowUser.tsx';
 import Home from './Home/Home.tsx';
 import { AuthProvider, useAuth } from './components/Auth/Auth.tsx';
 import Login from './Login/Login.tsx';
+import HotelList from './Hotels/HotelList.tsx';
+import HotelShow from './Hotels/HotelShow.tsx';
 
 interface ProtectedRouteProps {
   element: React.ReactElement;
@@ -49,6 +51,14 @@ const router = createBrowserRouter([
       {
         path: 'users/:id',
         element:  <ProtectedRoute element={<ShowUser />} />
+      },
+      {
+        path: 'hotels',
+        element:  <ProtectedRoute element={<HotelList />} />
+      },
+      {
+        path: 'hotels/:id',
+        element:  <ProtectedRoute element={<HotelShow />} />
       },
     ],
   },
