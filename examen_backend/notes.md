@@ -19,3 +19,8 @@ mix rollback.tenant 100002
 ```elixir
 ExamenBackend.Users.create_user(%{user_name: "Lisa", email: "info@test.com", name: "Lisa", password: "Password123!"}, [prefix: "100002"])
 ```
+
+### Add hotel to tenant
+```elixir
+ExamenBackend.Hotels.create_hotel(%{name: "Radison Green"}, [prefix: "100002"])
+```
