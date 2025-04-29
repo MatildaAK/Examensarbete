@@ -87,7 +87,7 @@ const Login: React.FC = () => {
                     onChange={(e) => setLoginInput(e.target.value)}
                     name="account"
                     id="account"
-                    className="text-textColor text-start"
+                    className="text-textColor text-start login_input"
                   />
                 </div>
                 <div className="flex items-center gap-1">
@@ -100,7 +100,7 @@ const Login: React.FC = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     name="password"
                     id="password"
-                    className="text-textColor text-start"
+                    className="text-textColor text-start login_input"
                   />
                 </div>
               </div>
