@@ -10,7 +10,7 @@ import UserForm from "./UserFormComponent";
 import { User } from "../Interfaces/Types";
 import { updateUser } from "./User";
 
-const ShowUser: React.FC = () => {
+const UserShow: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -61,7 +61,7 @@ const ShowUser: React.FC = () => {
   if (error) return <p>Något gick fel: {error}</p>;
   if (!user) return <p>Ingen användare hittades.</p>;
 
-  const deleteUser = async (id: number) => {
+  const deleteUser = async (id: string) => {
     const confirmDelete = window.confirm(
       "Är du säker på att du vill ta bort denna användare?"
     );
@@ -130,4 +130,4 @@ const ShowUser: React.FC = () => {
   );
 };
 
-export default ShowUser;
+export default UserShow;
