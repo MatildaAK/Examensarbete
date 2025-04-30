@@ -10,7 +10,7 @@ defmodule ExamenBackend.Hotels.HotelRoom do
   schema "hotel_rooms" do
     field :name, :string
     field :size, :string
-    belongs_to :hotel, Hotel
+    belongs_to :hotel, Hotel, type: :binary_id
 
     timestamps()
   end
