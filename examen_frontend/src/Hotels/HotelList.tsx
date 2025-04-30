@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import BASE_URL from "../config";
-import { Hotel, NewHotel } from "../Interfaces/Hotel";
+import { Hotel, NewHotel } from "../Interfaces/HotelTypes";
 import Container from "../components/core/Container";
 import Back from "../components/core/Back";
 import Button from "../components/core/Button";

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Button from "../components/core/Button";
 import Input from "../components/core/Input";
-import { Hotel, NewHotel } from "../Interfaces/Hotel";
+import { Hotel, NewHotel } from "../Interfaces/HotelTypes";
 
 interface HotelFormProps<T extends Hotel | NewHotel> {
   initialHotel?: T;
@@ -52,9 +52,9 @@ const HotelForm = <T extends Hotel | NewHotel>({
     <>
       <form onSubmit={handleSubmit}>
         {error && <p className="text-thirdColor">{error}</p>}
-        <label htmlFor="name">Namn</label>
         <Input
           type="text"
+          label="Namn"
           value={name}
           onChange={(e) => setName(e.target.value)}
           name="name"

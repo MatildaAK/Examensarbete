@@ -4,7 +4,7 @@ export interface HotelBase {
   
   export interface Hotel extends HotelBase {
     hotel_rooms?: HotelRoom[];
-    id: number;
+    id: string;
   }
   
   export interface NewHotel extends HotelBase {
@@ -17,9 +17,11 @@ export interface HotelBase {
   }
 
   export interface HotelRoom extends HotelRoomBase {
-    id: number;
+    id: string;
+    hotel_id: string;
   }
 
   export interface NewHotelRoom extends HotelRoomBase {
     id?: undefined;
+    hotel_id: string;
   }
