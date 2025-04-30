@@ -3,12 +3,13 @@ import './index.css'
 import App from './App.tsx'
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import UserList from './user/UserList.tsx';
-import ShowUser from './user/ShowUser.tsx';
+import UserShow from './user/UserShow.tsx';
 import Home from './Home/Home.tsx';
 import { AuthProvider, useAuth } from './components/Auth/Auth.tsx';
 import Login from './Login/Login.tsx';
 import HotelList from './Hotels/HotelList.tsx';
 import HotelShow from './Hotels/HotelShow.tsx';
+import HotelRoomList from './Hotel_Rooms/HotelRoomList.tsx';
 
 interface ProtectedRouteProps {
   element: React.ReactElement;
@@ -50,7 +51,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'users/:id',
-        element:  <ProtectedRoute element={<ShowUser />} />
+        element:  <ProtectedRoute element={<UserShow />} />
       },
       {
         path: 'hotels',
@@ -59,6 +60,10 @@ const router = createBrowserRouter([
       {
         path: 'hotels/:id',
         element:  <ProtectedRoute element={<HotelShow />} />
+      },
+      {
+        path: 'hotel_rooms',
+        element:  <ProtectedRoute element={<HotelRoomList />} />
       },
     ],
   },
