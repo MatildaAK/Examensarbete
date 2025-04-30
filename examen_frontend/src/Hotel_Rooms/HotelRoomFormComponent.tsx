@@ -27,7 +27,6 @@ const HotelRoomForm = <T extends HotelRoom | NewHotelRoom>({
 
   useEffect(() => {
     if (initialHotelRoom) {
-      console.log("🔍 initialHotelRoom i form:", initialHotelRoom);
       setName(initialHotelRoom.name);
       setSize(initialHotelRoom.size);
       if (initialHotelRoom.hotel_id) {

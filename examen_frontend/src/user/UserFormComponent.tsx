@@ -23,7 +23,6 @@ const UserForm = <T extends User | NewUser>({
 
   useEffect(() => {
     if (initialUser) {
-      console.log("🔍 initialUser i form:", initialUser);
       setUserName(initialUser.user_name);
       setName(initialUser.name);
       setEmail(initialUser.email);

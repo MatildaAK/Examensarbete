@@ -20,7 +20,6 @@ const HotelForm = <T extends Hotel | NewHotel>({
 
   useEffect(() => {
     if (initialHotel) {
-      console.log("🔍 initialHotel i form:", initialHotel);
       setName(initialHotel.name);
     }
   }, [initialHotel]);
