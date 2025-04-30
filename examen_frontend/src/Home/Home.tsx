@@ -9,9 +9,9 @@ const Home = () => {
         <>
         <Container className="my-6">
             <section className="grid grid-cols-1 gap-y-6 sm:grid-cols-3 sm:gap-x-4">
-                <LinkCard to="/users"><FontAwesomeIcon icon={faUsers} className="h-16 w-16" /> <span className="ml-4">users</span> </LinkCard>
-                <LinkCard to="/hotels"><FontAwesomeIcon icon={faCity} className="h-16 w-16" /> <span className="ml-4">Hotels</span> </LinkCard>
-                <LinkCard to="/users"><FontAwesomeIcon icon={faBuilding} className="h-16 w-16" /> <span className="ml-4">Hotel Rooms</span> </LinkCard>
+                <LinkCard to="/users"><FontAwesomeIcon icon={faUsers} className="h-16 w-16" /> <span className="ml-4">användare</span> </LinkCard>
+                <LinkCard to="/hotels"><FontAwesomeIcon icon={faCity} className="h-16 w-16" /> <span className="ml-4">Hotell</span> </LinkCard>
+                <LinkCard to="/hotel_rooms"><FontAwesomeIcon icon={faBuilding} className="h-16 w-16" /> <span className="ml-4">Hotellrum</span> </LinkCard>
             </section>
         </Container>
         </>
