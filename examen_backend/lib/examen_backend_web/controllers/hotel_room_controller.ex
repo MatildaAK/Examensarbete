@@ -3,15 +3,16 @@ defmodule ExamenBackendWeb.HotelRoomController do
 
   alias ExamenBackend.Hotels
   alias ExamenBackend.Hotels.HotelRoom
+  alias ExamenBackendWeb.Serializers
 
   def index(conn, _params) do
     hotel_rooms = Hotels.list_hotel_rooms([prefix: conn.assigns.tenant])
-    json(conn, %{data: Enum.map(hotel_rooms, &serialize_hotel_room/1)})
+    json(conn, %{data: Enum.map(hotel_rooms, &Serializers.serialize_hotel_room/1)})
   end
 
   def show(conn, %{"id" => id}) do
     hotel_room = Hotels.get_hotel_room!(id, [prefix: conn.assigns.tenant])
-    json(conn, %{data: serialize_hotel_room(hotel_room)})
+    json(conn, %{data: Serializers.serialize_hotel_room(hotel_room)})
   end
 
   def create(conn, %{"hotel_room" => hotel_room_params}) do
@@ -19,7 +20,7 @@ defmodule ExamenBackendWeb.HotelRoomController do
       conn
       |> put_status(:created)
       |> put_resp_header("location", ~p"/api/hotel_rooms/#{hotel_room.id}")
-      |> json(%{data: serialize_hotel_room(hotel_room)})
+      |> json(%{data: Serializers.serialize_hotel_room(hotel_room)})
     end
   end
 
@@ -27,7 +28,7 @@ defmodule ExamenBackendWeb.HotelRoomController do
     hotel_room = Hotels.get_hotel_room!(id, [prefix: conn.assigns.tenant])
 
     with {:ok, %HotelRoom{} = updated_hotel_room} <- Hotels.update_hotel_room(hotel_room, hotel_room_params) do
-      json(conn, %{data: serialize_hotel_room(updated_hotel_room)})
+      json(conn, %{data: Serializers.serialize_hotel_room(updated_hotel_room)})
     end
   end
 
@@ -38,13 +39,4 @@ defmodule ExamenBackendWeb.HotelRoomController do
       send_resp(conn, :no_content, "")
     end
   end
-
-  defp serialize_hotel_room(%HotelRoom{} = hotel_room) do
-    %{
-      id: hotel_room.id,
-      name: hotel_room.name,
-      hotel: hotel_room.hotel
-    }
-  end
-
 end
