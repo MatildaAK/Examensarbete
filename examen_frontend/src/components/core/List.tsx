@@ -1,16 +1,3 @@
-{/* 
-  <List 
-    items={users}
-    renderSlot={(user: User) =>
-      <>
-      {user.name} ({user.email}){" "}
-      <button onClick={() => updateUser(user)}>✏️</button>{" "}
-      <button onClick={() => deleteUser(user.id)}>🗑️</button>
-      </>
-    }
-  /> 
-*/}
-
 interface ListProps {
   items: { title: string; value: React.ReactNode }[];
   renderSlot: (item: { title: string; value: React.ReactNode }) => React.ReactNode;
