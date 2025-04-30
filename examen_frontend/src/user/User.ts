@@ -24,7 +24,7 @@ export const createUser = async (user_name: string, email: string, password: str
   return data.data;
 };
 
-export const updateUser = async (id: number, user_name: string, email: string, name: string, password: string): Promise<User> => {
+export const updateUser = async (id: string, user_name: string, email: string, name: string, password: string): Promise<User> => {
 
   const token = localStorage.getItem("token");
   const tenant = localStorage.getItem("tenant");
