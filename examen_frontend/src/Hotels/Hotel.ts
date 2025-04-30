@@ -1,5 +1,5 @@
 import BASE_URL from "../config";
-import { Hotel } from "../Interfaces/Hotel";
+import { Hotel } from "../Interfaces/HotelTypes";
 
 export const createHotel = async(name: string) => {
 
@@ -24,7 +24,7 @@ export const createHotel = async(name: string) => {
       return data.data;
 };
 
-export const updateHotel = async (id: number, name: string): Promise<Hotel> => {
+export const updateHotel = async (id: string, name: string): Promise<Hotel> => {
 
   const token = localStorage.getItem("token");
   const tenant = localStorage.getItem("tenant");
