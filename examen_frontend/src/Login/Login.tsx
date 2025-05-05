@@ -24,7 +24,7 @@ const Login: React.FC = () => {
     const [user_name, tenant] = loginInput.split("@");
 
     try {
-      const response = await fetch(`${BASE_URL}/login`, {
+      const res = await fetch(`${BASE_URL}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -37,15 +37,14 @@ const Login: React.FC = () => {
         }),
       });
 
-      if (!response.ok) {
-        // Om svaret inte är OK, kasta ett fel
-        const errorData = await response.json();
+      if (!res.ok) {
+        const errorData = await res.json();
         throw new Error(errorData.error || "Inloggning misslyckades");
       }
 
-      const data = await response.json();
+      const data = await res.json();
 
-      if (response.ok) {
+      if (res.ok) {
         const { user_name, id, token } = data;
 
         onLogin(user_name, id, token, tenant);
