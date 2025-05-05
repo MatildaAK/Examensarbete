@@ -8,8 +8,10 @@ vi försöker att följa samma struktur och användar sett som vi har gjorti QH 
 
 1. [Starta projekt](#startproject)
 2. [Databaskoppling](#databaskoppling)
-3. [Komponenter](#komponenter)
-4. [CLSX](#clsx)
+3. [Controllers](#controllers)
+4. [Routes](#routes)
+5. [Komponenter](#komponenter)
+6. [CLSX](#clsx)
 
 Vi har byggt Våran React applikation baserat på det vi har i Elixir / Phoenix LiveView, så den består av olika komponenter som vi kan använda på flera ställen. Detta för att försöka minska duppliceringen av kod. Vi använder oss av komponenter och props för att vi har arbetat med tidigare och tycker det är smidit och när projektet väker är det smidigt att kunna använda samma kod på flera ställen ett att behöva dupplicera koden på alla ställen där det används.
 
@@ -40,6 +42,73 @@ vi har återanvänt samma kodbas så långt det går i backenden, så att den ä
 För att frontenden ska kunna kommunicera med backenden har vi definierat vår *Base_url* i Config.ts, vilket gör det enkelt att hantera URL:en centralt.
 
 Backenden är byggd med Elixir och Phoenix LiveView, och använder PostgreSQL som databas, där kopplingen är förkonfigurerad i projektet. För att möjliggöra kommunikation mellan frontend och backend från olika domäner har vi lagt till CORSPlug i endpoint.ex. Där har vi specificerat tillåtna origins, metoder och headers. CORSPlug är en dependency som vi har lagt till i mix.exs.
+
+```elixir
+  plug CORSPlug,
+    origin: ["http://localhost:5173"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    headers: ["Authorization", "Content-Type", "X-Tenant"]
+```
+
+### Controllers
+I vår backend, som är byggd med Elixir och webbramverket Phoenix, använder vi så kallade controllers för att hantera HTTP-förfrågningar till vår API. Varje controller ansvarar för en resurstyp – i det här fallet [hotellrum](/examen_backend/lib/examen_backend_web/controllers/hotel_room_controller.ex). En controller består av olika funktioner, en för varje typ av operation: hämta alla, hämta en, skapa, uppdatera och ta bort.
+
+Kort om varje funktion:
+* *index/2:* Hämtar alla hotellrum från databasen och returnerar dem som JSON.
+
+* *show/2:* Hämtar ett enskilt hotellrum baserat på ID.
+
+* *create/2:* Skapar ett nytt hotellrum med de data som skickas in i förfrågan.
+
+* *update/2:* Uppdaterar ett befintligt hotellrum.
+
+* *delete/2:* Tar bort ett hotellrum.
+
+Viktiga koncept:
+* *conn:* Objektet som håller information om HTTP-förfrågan och används för att skicka svar tillbaka till klienten.
+
+* *conn.assigns.tenant:* Eftersom vi arbetar med flera kunder (tenants) använder vi detta värde för att peka till rätt databasnamnsutrymme i PostgreSQL. Det möjliggör så kallad "multi-tenancy", där varje kund har sina egna data.
+
+* *with:* En kontrollstruktur i Elixir som används för att hantera kedjor av operationer som kan misslyckas. Om något går fel, avbryts kedjan automatiskt.
+
+* *Serializers.serialize_hotel_room/1:* En hjälpfunktion som omvandlar våra Elixir-datastrukturer till ett JSON-format som passar frontendens behov.
+
+Exempel:
+
+När frontend skickar en POST-förfrågan med data för att skapa ett nytt hotellrum, hamnar den i create/2. Den använder Hotels.create_hotel_room/2 för att skapa hotellet i databasen, och returnerar sedan svaret som JSON.
+
+### Routes
+I vår Phoenix-applikation definierar vi så kallade routes (vägar) som kopplar inkommande HTTP-förfrågningar till specifika funktioner i våra controllers. Dessa routes beskriver vilket URL-mönster och HTTP-metod som ska anropa vilken funktion.
+
+Här är ett exempel för hotell:
+
+```elixir
+  get "/hotels", HotelController, :index # Hämtar alla Hotell
+  get "/hotels/:id", HotelController, :show # Hämtar ett specifikt hotell
+  post "/hotels", HotelController, :create # Skapar ett nytt hotell
+  put "/hotels/:id", HotelController, :update # Uppdatera ett hotell
+  delete "/hotels/:id", HotelController, :delete # Radera ett hotell
+```
+
+#### Vad betyder detta?
+* get, post, put, delete är HTTP-metoder som talar om vad för slags operation det handlar om:
+
+  * *get:* hämta data
+
+  * *post:* skapa ny data
+
+  * *put:* uppdatera existerande data
+
+  * *delete:* ta bort data
+
+* URL-strängen är den sökväg som klienten (t.ex. frontend) anropar. :id betyder att det är en dynamisk parameter, t.ex. /hotel/1.
+
+* HotelController är den modul (controller) som tar hand om förfrågan.
+
+* :index, :show, etc. är namnet på den funktion i controllern som körs när vägen matchas.
+
+#### Varför är detta viktigt?
+Dessa routes fungerar som kopplingen mellan frontend och backend. När t.ex. frontend skickar en förfrågan till /hotel/5 med metoden GET, vet Phoenix att det är HotelController.show/2 som ska anropas – och den funktionen ansvarar för att hämta hotell med ID 5 och returnera det som JSON.
 
 ### Komponenter
 
