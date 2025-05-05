@@ -31,3 +31,11 @@ mix deps.get
 
 mix deps.compile 
 ```
+
+```elixir
+iex -S mix phx.server
+```
+Eller om du har en Windows:
+```elixir
+iex.bat -S mix phx.server
+```
