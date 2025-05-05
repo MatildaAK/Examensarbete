@@ -3,17 +3,17 @@ import Button from "../components/core/Button";
 import Input from "../components/core/Input";
 import { NewUser, User } from "../Interfaces/Types";
 
-interface UserFormProps<T extends User | NewUser> {
-  initialUser?: T;
-  onSubmit: (user: T) => Promise<void>;
+interface UserFormProps<TUser extends User | NewUser> {
+  initialUser?: TUser;
+  onSubmit: (user: TUser) => Promise<void>;
   submitText?: string;
 }
 
-const UserForm = <T extends User | NewUser>({
+const UserForm = <TUser extends User | NewUser>({
   initialUser,
   onSubmit,
   submitText = "Spara",
-}: UserFormProps<T>) => {
+}: UserFormProps<TUser>) => {
   const [user_name, setUserName] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -43,14 +43,14 @@ const UserForm = <T extends User | NewUser>({
         email,
         name,
         password,
-      } as T);
+      } as TUser);
     } else {
       await onSubmit({
         user_name,
         email,
         password,
         name,
-      } as T);
+      } as TUser);
     }
   } catch (err) {
     setError("Något gick fel.");
@@ -62,30 +62,30 @@ const UserForm = <T extends User | NewUser>({
   return (
     <form onSubmit={handleSubmit}>
       {error && <p className="text-thirdColor">{error}</p>}
-      <label htmlFor="name">Användar Namn</label>
       <Input
         type="text"
+        label="Användar namn"
         value={user_name}
         onChange={(e) => setUserName(e.target.value)}
         name="username"
       />
-      <label htmlFor="name">Namn</label>
       <Input
         type="text"
+        label="Namn"
         value={name}
         onChange={(e) => setName(e.target.value)}
         name="name"
       />
-      <label htmlFor="email">Email</label>
       <Input
         type="email"
+        label="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         name="email"
       />
-      <label htmlFor="name">Lösenord</label>
       <Input
         type="password"
+        label="Lösenord"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         name="password"
