@@ -11,7 +11,6 @@ vi försöker att följa samma struktur och användar sett som vi har gjorti QH 
 3. [Komponenter](#komponenter)
 4. [CLSX](#clsx)
 
-
 Vi har byggt Våran React applikation baserat på det vi har i Elixir / Phoenix LiveView, så den består av olika komponenter som vi kan använda på flera ställen. Detta för att försöka minska duppliceringen av kod. Vi använder oss av komponenter och props för att vi har arbetat med tidigare och tycker det är smidit och när projektet väker är det smidigt att kunna använda samma kod på flera ställen ett att behöva dupplicera koden på alla ställen där det används.
 
 
@@ -36,7 +35,11 @@ iex.bat -S mix phx.server
 ```
 
 ### Databaskoppling
+vi har återanvänt samma kodbas så långt det går i backenden, så att den är den samma här som i QH för att skapa tenant, användare samt hotell i terminalen.
 
+För att frontenden ska kunna kommunicera med backenden har vi definierat vår *Base_url* i Config.ts, vilket gör det enkelt att hantera URL:en centralt.
+
+Backenden är byggd med Elixir och Phoenix LiveView, och använder PostgreSQL som databas, där kopplingen är förkonfigurerad i projektet. För att möjliggöra kommunikation mellan frontend och backend från olika domäner har vi lagt till CORSPlug i endpoint.ex. Där har vi specificerat tillåtna origins, metoder och headers. CORSPlug är en dependency som vi har lagt till i mix.exs.
 
 ### Komponenter
 
