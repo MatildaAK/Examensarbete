@@ -19,6 +19,22 @@ Vi har byggt Våran React applikation baserat på det vi har i Elixir / Phoenix 
 
 Se hur i [README](/examen_frontend/README.md)
 
+starta servern:
+
+**Frontend:**
+```
+npm run dev
+```
+
+**Backend:**
+```elixir
+iex -S mix phx.server
+
+Windows:
+
+iex.bat -S mix phx.server
+```
+
 ### Databaskoppling
 
 
