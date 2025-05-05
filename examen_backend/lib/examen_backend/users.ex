@@ -15,9 +15,9 @@ defmodule ExamenBackend.Users do
     Repo.get_by(User, [email: email], prefix: tenant)
   end
 
-  def get_user_by_user_name_and_password(tenant, user_name, password)
-      when is_binary(tenant) and is_binary(user_name) and is_binary(password) do
-    user = Repo.get_by(User, [user_name: user_name], prefix: tenant)
+  def get_user_by_user_name_and_password(opts, user_name, password)
+      when is_binary(opts) and is_binary(user_name) and is_binary(password) do
+    user = Repo.get_by(User, [user_name: user_name], prefix: opts)
 
     if user && Map.has_key?(user, :id) && User.valid_password?(user, password), do: user
   end
