@@ -10,10 +10,11 @@ vi försöker att följa samma struktur och användar sett som vi har gjorti QH 
 2. [Databaskoppling](#databaskoppling)
 3. [Controllers](#controllers)
 4. [Routes](#routes)
-5. [Komponenter](#komponenter)
-6. [CLSX](#clsx)
+5. [BCrypt](#bcrypt)
+6. [Komponenter](#komponenter)
+7. [CLSX](#clsx)
 
-Vi har byggt Våran React applikation baserat på det vi har i Elixir / Phoenix LiveView, så den består av olika komponenter som vi kan använda på flera ställen. Detta för att försöka minska duppliceringen av kod. Vi använder oss av komponenter och props för att vi har arbetat med tidigare och tycker det är smidit och när projektet väker är det smidigt att kunna använda samma kod på flera ställen ett att behöva dupplicera koden på alla ställen där det används.
+Vi har byggt Våran React applikation baserat på det vi har i Elixir / Phoenix LiveView, så den består av olika komponenter som vi kan använda på flera ställen. Detta för att försöka minska duppliceringen av kod. Vi använder oss av komponenter och props för att vi har arbetat med tidigare och tycker det är smidit och när projektet växer är det smidigt att kunna använda samma kod på flera ställen ett att behöva dupplicera koden på alla ställen där det används.
 
 
 ### Starta projekt
@@ -109,6 +110,46 @@ Här är ett exempel för hotell:
 
 #### Varför är detta viktigt?
 Dessa routes fungerar som kopplingen mellan frontend och backend. När t.ex. frontend skickar en förfrågan till /hotel/5 med metoden GET, vet Phoenix att det är HotelController.show/2 som ska anropas – och den funktionen ansvarar för att hämta hotell med ID 5 och returnera det som JSON.
+
+### BCrypt
+Vi använder oss av biblioteket bcrypt_elixir i backend för att hasha användarnas lösenord.
+Detta bibliotek är en wrapper runt C-biblioteket bcrypt, vilket innebär att det kräver en fungerande C-kompilator för att kunna byggas.
+
+#### Krav för Windows
+
+Eftersom bcrypt_elixir kompileras från källkod behöver du ha rätt utvecklingsverktyg installerade. På Windows krävs delar från Visual Studio Installer:
+
+1. Installera [Visual Studio Build Tool](https://visualstudio.microsoft.com/downloads/) 
+2. Under installationen, välj:
+      * Desktop development with C++ 
+        * C++ CMake tools for Windows
+        * Windows 11 eller 10 SDK (välj den senaste)
+        * MSVC v143 - VS 2022 C++
+
+Vanligt felmeddelande vid användande av bcrypt
+
+När vi först körde mix deps.get och försökte kompilera projektet stötte vi på följande fel:
+```bash
+could not compile dependency :bcrypt_elixir, "mix compile" failed. Errors may have been logged above. You can recompile this dependency with "mix deps.compile
+
+(Mix) Could not compile with "nmake" (exit status: 2). One option is to install a recent version of Visual C++ Build Tools either manually or using Chocolatey - choco install VisualCppBuildTools.
+```
+
+För att lösa detta krävs att Visual Studio-kompilatorn är korrekt laddad i din terminalsession.
+* Öppna Command Prompt (cmd)
+* Kör kommandot nedan för att ladda rätt miljövariabler (anpassa sökvägen om din installation ligger någon annanstans):
+```mathematica
+cmd /K "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvarsall.bat"
+```
+
+I samma terminal, kör:
+```bash
+mix deps.clean bcrypt_elixir --all 
+mix deps.get 
+mix deps.compile 
+```
+
+Efter detta bör bcrypt_elixir kompileras korrekt.
 
 ### Komponenter
 
