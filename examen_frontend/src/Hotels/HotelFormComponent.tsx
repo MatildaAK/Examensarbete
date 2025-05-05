@@ -3,17 +3,17 @@ import Button from "../components/core/Button";
 import Input from "../components/core/Input";
 import { Hotel, NewHotel } from "../Interfaces/HotelTypes";
 
-interface HotelFormProps<T extends Hotel | NewHotel> {
-  initialHotel?: T;
-  onSubmit: (hotel: T) => Promise<void>;
+interface HotelFormProps<THotel extends Hotel | NewHotel> {
+  initialHotel?: THotel;
+  onSubmit: (hotel: THotel) => Promise<void>;
   submitText?: string;
 }
 
-const HotelForm = <T extends Hotel | NewHotel>({
+const HotelForm = <THotel extends Hotel | NewHotel>({
   initialHotel,
   onSubmit,
   submitText = "Spara",
-}: HotelFormProps<T>) => {
+}: HotelFormProps<THotel>) => {
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -34,11 +34,11 @@ const HotelForm = <T extends Hotel | NewHotel>({
         await onSubmit({
           id: initialHotel.id,
           name,
-        } as T);
+        } as THotel);
       } else {
         await onSubmit({
           name,
-        } as T);
+        } as THotel);
       }
     } catch (err) {
       setError("Något gick fel.");
