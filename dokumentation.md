@@ -214,3 +214,26 @@ Hur det kan användas:
   }}
 />
 ```
+
+### CLSX
+I några av våra komponenter använder vi biblioteket clsx, som är ett lättviktsbibliotek för att kombinera och hantera CSS-klasser. clsx gör det enklare att conditionellt lägga till eller ta bort CSS-klasser baserat på logik, vilket minskar risken för att behöva hantera komplexa if-satser eller strängmanipuleringar för att bygga klasser manuellt.
+
+En vanlig användning är att kombinera standardklasser med dynamiska klasser, beroende på komponentens tillstånd eller props. Till exempel kan man använda clsx för att dynamiskt lägga till en klass baserat på om en komponent är aktiv, om den har en viss storlek, eller om en annan prop är satt. På så sätt blir koden mer läsbar och lättare att underhålla.
+
+Exempel:
+
+```typescript
+<button
+      className={clsx(
+        "btn",
+        isActive && "btn-active",
+        isDisabled && "btn-disabled"
+      )}
+>
+  Click me
+</button>
+```
+
+Här kommer clsx att lägga till klassen btn-active om isActive är true, och btn-disabled om isDisabled är true. Det gör det möjligt att kombinera klasser på ett renare och mer hanterbart sätt.
+
+Eller som i vårat fall att vi använder det för att kunna lägga till styling där det behövs (se [Card_link](#card_link)). 
