@@ -22,12 +22,6 @@ interface InputProps {
   inputMode?: "numeric";
 }
 
-// För att använda denna komponent i din komponent:
-// 1. När du importerat Input där du vill ha den så lägger du till props inuti Input-taggen.
-// 2. Vill du ha checkbox eller radio så lägger du till någon av de som type annars text.
-// 3. checked-propen är för checkboxes.
-// 4. Skapa funktion i din fil för att hantera onChange (och om date & time, onTimeChange) i Input.
-
 const Input: React.FC<InputProps> = ({
   type,
   label,
