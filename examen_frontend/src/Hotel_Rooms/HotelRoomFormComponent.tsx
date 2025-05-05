@@ -4,21 +4,21 @@ import Input from "../components/core/Input";
 import { Hotel, HotelRoom, NewHotelRoom } from "../Interfaces/HotelTypes";
 import Select from "../components/core/Select";
 
-interface HotelRoomFormProps<T extends HotelRoom | NewHotelRoom> {
-  initialHotelRoom?: T;
-  onSubmit: (hotelRoom: T) => Promise<void>;
+interface HotelRoomFormProps<TRoom extends HotelRoom | NewHotelRoom> {
+  initialHotelRoom?: TRoom;
+  onSubmit: (hotelRoom: TRoom) => Promise<void>;
   submitText?: string;
   hotels?: Hotel[];
   initialHotelId?: string;
 }
 
-const HotelRoomForm = <T extends HotelRoom | NewHotelRoom>({
+const HotelRoomForm = <TRoom extends HotelRoom | NewHotelRoom>({
   initialHotelRoom,
   onSubmit,
   hotels,
   submitText = "Spara",
   initialHotelId,
-}: HotelRoomFormProps<T>) => {
+}: HotelRoomFormProps<TRoom>) => {
   const [name, setName] = useState("");
   const [size, setSize] = useState("");
   const [hotelId, setHotelId] = useState<string>("");
@@ -61,13 +61,13 @@ const HotelRoomForm = <T extends HotelRoom | NewHotelRoom>({
           name,
           size,
           hotel_id: hotelId,
-        } as T);
+        } as TRoom);
       } else {
         await onSubmit({
           name,
           size,
           hotel_id: hotelId,
-        } as T);
+        } as TRoom);
       }
     } catch (err) {
       setError("Något gick fel.");
