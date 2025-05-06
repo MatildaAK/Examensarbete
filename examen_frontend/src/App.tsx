@@ -6,7 +6,7 @@ import Footer from './components/Footer/Footer';
 
 function App() {
   const navigate = useNavigate();
-  const { login, logout, isAuthenticated } = useAuth();
+  const { login, logout, isAuthenticated, loading } = useAuth();
 
   const handleLogin = (user_name: string, userId: string, token: string, tenant: string) => {
     login(user_name, userId, token, tenant);
@@ -17,6 +17,10 @@ function App() {
     logout();
     navigate("/");
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <main className='min-h-screen flex flex-col'>
