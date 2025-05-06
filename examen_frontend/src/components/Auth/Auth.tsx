@@ -2,6 +2,7 @@ import { createContext, useState, useContext, ReactNode, useEffect } from "react
 
 interface AuthContextType {
   isAuthenticated: boolean;
+  loading: boolean;
   userName: string | null;
   userId: string | null;
   token: string | null;
@@ -17,12 +18,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [userName, setUserName] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(localStorage.getItem("id"));
   const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
-  const [tenant, setTenant] = useState<string | null>(localStorage.getItem("tenant"))
+  const [tenant, setTenant] = useState<string | null>(localStorage.getItem("tenant"));
+  const [loading, setLoading] = useState(true);
 
-  function isTokenExpired(token: string | null) {
+  function isTokenExpired(token: string | null): boolean {
     if (!token) return true;
+  
     const parts = token.split('.');
-    if (parts.length !== 3) return true;
+    if (parts.length !== 3) {
+      return false;
+    }
+  
     try {
       const payload = JSON.parse(atob(parts[1]));
       const currentTime = Math.floor(Date.now() / 1000);
@@ -33,7 +39,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }
   
-
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     const storedUserName = localStorage.getItem("user_name");
@@ -49,7 +54,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } else {
       logout();
     }
-  }, []);
+
+    setLoading(false);
+  }, []);  
 
   const login = (user_name: string, userId: string, token: string, tenant: string) => {
     setIsAuthenticated(true);
@@ -78,7 +85,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, userName, userId, token, tenant, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, loading, userName, userId, token, tenant, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
