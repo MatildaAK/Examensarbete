@@ -10,6 +10,8 @@ import Login from './Login/Login.tsx';
 import HotelList from './Hotels/HotelList.tsx';
 import HotelShow from './Hotels/HotelShow.tsx';
 import HotelRoomList from './Hotel_Rooms/HotelRoomList.tsx';
+import HotelList1000 from './Hotels/HotelList1000.tsx';
+import HotelRoomList1000 from './Hotel_Rooms/HotelRoomList1000.tsx';
 
 interface ProtectedRouteProps {
   element: React.ReactElement;
@@ -59,12 +61,20 @@ const router = createBrowserRouter([
         element:  <ProtectedRoute element={<HotelList />} />
       },
       {
+        path: 'hotels_1000',
+        element:  <ProtectedRoute element={<HotelList1000 />} />
+      },
+      {
         path: 'hotels/:id',
         element:  <ProtectedRoute element={<HotelShow />} />
       },
       {
         path: 'hotel_rooms',
         element:  <ProtectedRoute element={<HotelRoomList />} />
+      },
+      {
+        path: 'hotel_rooms_1000',
+        element:  <ProtectedRoute element={<HotelRoomList1000 />} />
       },
     ],
   },
