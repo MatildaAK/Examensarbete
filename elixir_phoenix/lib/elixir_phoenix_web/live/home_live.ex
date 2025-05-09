@@ -9,13 +9,13 @@ defmodule ElixirPhoenixWeb.HomeLive do
     <.container class="my-6">
       <section class="grid grid-cols-1 gap-y-6 sm:grid-cols-3 sm:gap-x-4">
         <.card_link navigate={~p"/#"}>
-          <.icon name="hero-home-modern-solid" class="h-16 w-16" /> Add a booking
+          <.icon name="hero-users" class="h-16 w-16" /> Users
         </.card_link>
         <.card_link navigate={~p"/#"}>
-          <.icon name="hero-presentation-chart-line-solid" class="h-16 w-16" /> Check-in
+          <.icon name="hero-home-modern" class="h-16 w-16" /> Hotels
         </.card_link>
         <.card_link navigate={~p"/#"}>
-          <.icon name="hero-banknotes-solid" class="h-16 w-16" /> Check-out
+          <.icon name="hero-building-office-2" class="h-16 w-16" /> Hotel Rooms
         </.card_link>
       </section>
     </.container>
@@ -25,9 +25,7 @@ defmodule ElixirPhoenixWeb.HomeLive do
   def mount(_params, _session, socket) do
     # Phoenix.PubSub.subscribe(Qh.PubSub, "time")
     # socket = assign(socket, :title, Titles.day_date_time())
-    {:ok,
-      socket
-      |> assign(:title, "Title")}
+    {:ok, assign(socket, :title, "Welcome!")}
   end
 
 end

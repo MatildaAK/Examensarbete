@@ -15,11 +15,9 @@
   </head>
   <body class="font-proxima bg-background text-foreground flex h-screen flex-col text-base antialiased">
     <header class="flex flex-col items-center">
-      <.nav_bar :if={@current_user}>
-        <.nav_bar_link navigate={~p"/"}>Accommodation</.nav_bar_link>
-        <.nav_bar_link navigate={~p"/"}>Activities</.nav_bar_link>
-        <.nav_bar_link navigate={~p"/"}>Shop</.nav_bar_link>
-      </.nav_bar>
+      <.link class="mt-6 w-fit mb-8" navigate={~p"/"}>
+        <.qsimbo_logo class="h-20" />
+      </.link>
     </header>
 
     {@inner_content}

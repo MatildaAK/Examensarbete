@@ -50,6 +50,14 @@ defmodule ElixirPhoenixWeb.Layouts do
   end
 
   attr :class, :string, default: ""
+
+  def qsimbo_logo(assigns) do
+    ~H"""
+    <img class={["mx-auto block", @class]} src="/images/logo.png" alt="QSimbo logo" />
+    """
+  end
+
+  attr :class, :string, default: ""
   attr :current_user, :map, default: nil
 
   slot :inner_block
