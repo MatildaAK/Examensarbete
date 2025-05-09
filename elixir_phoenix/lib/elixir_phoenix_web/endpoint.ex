@@ -12,8 +12,7 @@ defmodule ElixirPhoenixWeb.Endpoint do
   ]
 
   socket "/live", Phoenix.LiveView.Socket,
-    websocket: [connect_info: [session: @session_options]],
-    longpoll: [connect_info: [session: @session_options]]
+    websocket: [connect_info: [session: @session_options]]
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -31,7 +30,7 @@ defmodule ElixirPhoenixWeb.Endpoint do
     socket "/phoenix/live_reload/socket", Phoenix.LiveReloader.Socket
     plug Phoenix.LiveReloader
     plug Phoenix.CodeReloader
-    plug Phoenix.Ecto.CheckRepoStatus, otp_app: :elixir_phoenix
+    # plug Phoenix.Ecto.CheckRepoStatus, otp_app: :elixir_phoenix
   end
 
   plug Phoenix.LiveDashboard.RequestLogger,

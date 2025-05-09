@@ -26,7 +26,9 @@ erl_crash.dump
 elixir_phoenix-*.tar
 
 # Ignore assets that are produced by build tools.
-/priv/static/assets/
+# /priv/static/assets/
+/priv/static/assets/app.js
+/priv/static/assets/app.css
 
 # Ignore digested assets cache.
 /priv/static/cache_manifest.json

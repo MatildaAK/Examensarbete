@@ -17,6 +17,7 @@ defmodule ElixirPhoenixWeb.CoreComponents do
   use Phoenix.Component
   use Gettext, backend: ElixirPhoenixWeb.Gettext
 
+  alias Phoenix.HTML.FormField
   alias Phoenix.LiveView.JS
 
   @doc """
@@ -50,7 +51,7 @@ defmodule ElixirPhoenixWeb.CoreComponents do
       data-cancel={JS.exec(@on_cancel, "phx-remove")}
       class="relative z-50 hidden"
     >
-      <div id={"#{@id}-bg"} class="bg-zinc-50/90 fixed inset-0 transition-opacity" aria-hidden="true" />
+      <div id={"#{@id}-bg"} class="bg-accent/90 fixed inset-0 transition-opacity" aria-hidden="true" />
       <div
         class="fixed inset-0 overflow-y-auto"
         aria-labelledby={"#{@id}-title"}
@@ -97,7 +98,7 @@ defmodule ElixirPhoenixWeb.CoreComponents do
       <.flash kind={:info} flash={@flash} />
       <.flash kind={:info} phx-mounted={show("#flash")}>Welcome Back!</.flash>
   """
-  attr :id, :string, doc: "the optional id of flash container"
+  attr :id, :string, default: "flash", doc: "the optional id of flash container"
   attr :flash, :map, default: %{}, doc: "the map of flash messages to display"
   attr :title, :string, default: nil
   attr :kind, :atom, values: [:info, :error], doc: "used for styling and flash lookup"
@@ -106,19 +107,13 @@ defmodule ElixirPhoenixWeb.CoreComponents do
   slot :inner_block, doc: "the optional inner block that renders the flash message"
 
   def flash(assigns) do
-    assigns = assign_new(assigns, :id, fn -> "flash-#{assigns.kind}" end)
-
     ~H"""
     <div
       :if={msg = render_slot(@inner_block) || Phoenix.Flash.get(@flash, @kind)}
       id={@id}
       phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> hide("##{@id}")}
       role="alert"
-      class={[
-        "fixed top-2 right-2 mr-2 w-80 sm:w-96 z-50 rounded-lg p-3 ring-1",
-        @kind == :info && "bg-emerald-50 text-emerald-800 ring-emerald-500 fill-cyan-900",
-        @kind == :error && "bg-rose-50 text-rose-900 shadow-md ring-rose-500 fill-rose-900"
-      ]}
+      class={["fixed top-2 right-2 z-50 w-80 rounded-lg p-3 ring-1 sm:w-96", @kind == :info && "bg-emerald-50 fill-cyan-900 text-emerald-800 ring-emerald-500", @kind == :error && "bg-destructive fill-destructive-foreground text-destructive-foreground shadow-md ring-rose-500"]}
       {@rest}
     >
       <p :if={@title} class="flex items-center gap-1.5 text-sm font-semibold leading-6">
@@ -142,37 +137,21 @@ defmodule ElixirPhoenixWeb.CoreComponents do
       <.flash_group flash={@flash} />
   """
   attr :flash, :map, required: true, doc: "the map of flash messages"
-  attr :id, :string, default: "flash-group", doc: "the optional id of flash container"
 
   def flash_group(assigns) do
     ~H"""
-    <div id={@id}>
-      <.flash kind={:info} title={gettext("Success!")} flash={@flash} />
-      <.flash kind={:error} title={gettext("Error!")} flash={@flash} />
-      <.flash
-        id="client-error"
-        kind={:error}
-        title={gettext("We can't find the internet")}
-        phx-disconnected={show(".phx-client-error #client-error")}
-        phx-connected={hide("#client-error")}
-        hidden
-      >
-        {gettext("Attempting to reconnect")}
-        <.icon name="hero-arrow-path" class="ml-1 h-3 w-3 animate-spin" />
-      </.flash>
-
-      <.flash
-        id="server-error"
-        kind={:error}
-        title={gettext("Something went wrong!")}
-        phx-disconnected={show(".phx-server-error #server-error")}
-        phx-connected={hide("#server-error")}
-        hidden
-      >
-        {gettext("Hang in there while we get back on track")}
-        <.icon name="hero-arrow-path" class="ml-1 h-3 w-3 animate-spin" />
-      </.flash>
-    </div>
+    <.flash kind={:info} title="Success!" flash={@flash} />
+    <.flash kind={:error} title="Error!" flash={@flash} />
+    <.flash
+      id="disconnected"
+      kind={:error}
+      title="We can't find the internet"
+      phx-disconnected={show("#disconnected")}
+      phx-connected={hide("#disconnected")}
+      hidden
+    >
+      Attempting to reconnect <.icon name="hero-arrow-path" class="ml-1 h-3 w-3 animate-spin" />
+    </.flash>
     """
   end
 
@@ -189,7 +168,7 @@ defmodule ElixirPhoenixWeb.CoreComponents do
         </:actions>
       </.simple_form>
   """
-  attr :for, :any, required: true, doc: "the data structure for the form"
+  attr :for, :any, required: true, doc: "the datastructure for the form"
   attr :as, :any, default: nil, doc: "the server side parameter to collect all input under"
 
   attr :rest, :global,
@@ -213,33 +192,80 @@ defmodule ElixirPhoenixWeb.CoreComponents do
   end
 
   @doc """
+  Renders login form.
+  """
+  attr :for, :any, required: true, doc: "the datastructure for the form"
+  attr :as, :any, default: nil, doc: "the server side parameter to collect all input under"
+
+  attr :rest, :global,
+    include: ~w(autocomplete name rel action enctype method novalidate target multipart),
+    doc: "the arbitrary HTML attributes to apply to the form tag"
+
+  slot :inner_block, required: true
+  slot :actions, doc: "the slot for form actions, such as a submit button"
+
+  def login_form(assigns) do
+    ~H"""
+    <.form :let={f} for={@for} as={@as} {@rest}>
+      {render_slot(@inner_block, f)}
+      <div :for={action <- @actions} class="mt-2 flex items-center justify-between gap-6">
+        {render_slot(action, f)}
+      </div>
+    </.form>
+    """
+  end
+
+  @doc """
   Renders a button.
 
   ## Examples
 
       <.button>Send!</.button>
+      <.button type="danger">Delete</.button>
       <.button phx-click="go" class="ml-2">Send!</.button>
   """
-  attr :type, :string, default: nil
+  attr :type, :string,
+    default: "primary",
+    values: ~w(primary danger)
   attr :class, :string, default: nil
   attr :rest, :global, include: ~w(disabled form name value)
 
   slot :inner_block, required: true
+
+  def button(%{type: "danger"} = assigns) do
+    ~H"""
+    <button
+      type={@type}
+      class={[
+      base_button_classes(),
+      "bg-[#B50D0D] hover:bg-red-400 border-1 border-[#E77C56]",
+      @class
+    ]}
+      {@rest}
+    >
+      {render_slot(@inner_block)}
+    </button>
+    """
+  end
 
   def button(assigns) do
     ~H"""
     <button
       type={@type}
       class={[
-        "phx-submit-loading:opacity-75 rounded-lg bg-zinc-900 hover:bg-zinc-700 py-2 px-3",
-        "text-sm font-semibold leading-6 text-white active:text-white/80",
-        @class
-      ]}
+      base_button_classes(),
+      "bg-secondary hover:bg-secondary-hover active:bg-secondary",
+      @class
+    ]}
       {@rest}
     >
       {render_slot(@inner_block)}
     </button>
     """
+  end
+
+  defp base_button_classes do
+    "rounded-lg px-3 py-2 font-bold leading-6 text-white outline-white cursor-pointer disabled:[&not(:phx-click-loading)]:opacity-50 disabled:[&not(:phx-submit-loading)]:opacity-50 disabled:pointer-events-none phx-click-loading:animate-pulse phx-submit-loading:animate-pulse"
   end
 
   @doc """
@@ -260,8 +286,7 @@ defmodule ElixirPhoenixWeb.CoreComponents do
     * For live file uploads, see `Phoenix.Component.live_file_input/1`
 
   See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input
-  for more information. Unsupported types, such as hidden and radio,
-  are best written directly in your templates.
+  for more information.
 
   ## Examples
 
@@ -275,11 +300,10 @@ defmodule ElixirPhoenixWeb.CoreComponents do
 
   attr :type, :string,
     default: "text",
-    values: ~w(checkbox color date datetime-local email file month number password
-               range search select tel text textarea time url week)
+    values: ~w(checkbox color date datetime-local date-range email file hidden month number password
+               range radio search select tel text textarea time url week)
 
-  attr :field, Phoenix.HTML.FormField,
-    doc: "a form field struct retrieved from the form, for example: @form[:email]"
+  attr :field, FormField, doc: "a form field struct retrieved from the form, for example: @form[:email]"
 
   attr :errors, :list, default: []
   attr :checked, :boolean, doc: "the checked flag for checkbox inputs"
@@ -287,38 +311,35 @@ defmodule ElixirPhoenixWeb.CoreComponents do
   attr :options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
   attr :multiple, :boolean, default: false, doc: "the multiple flag for select inputs"
 
-  attr :rest, :global,
-    include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
+  attr :rest, :global, include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
                 multiple pattern placeholder readonly required rows size step)
 
-  def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
-    errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
+  slot :inner_block
 
+  def input(%{field: %FormField{} = field} = assigns) do
     assigns
     |> assign(field: nil, id: assigns.id || field.id)
-    |> assign(:errors, Enum.map(errors, &translate_error(&1)))
+    |> assign(:errors, Enum.map(field.errors, &translate_error(&1)))
     |> assign_new(:name, fn -> if assigns.multiple, do: field.name <> "[]", else: field.name end)
     |> assign_new(:value, fn -> field.value end)
     |> input()
   end
 
-  def input(%{type: "checkbox"} = assigns) do
+  def input(%{type: "checkbox", value: value} = assigns) do
     assigns =
-      assign_new(assigns, :checked, fn ->
-        Phoenix.HTML.Form.normalize_value("checkbox", assigns[:value])
-      end)
+      assign_new(assigns, :checked, fn -> Phoenix.HTML.Form.normalize_value("checkbox", value) end)
 
     ~H"""
-    <div>
-      <label class="flex items-center gap-4 text-sm leading-6 text-zinc-600">
-        <input type="hidden" name={@name} value="false" disabled={@rest[:disabled]} />
+    <div phx-feedback-for={@name} class="peer">
+      <label class="text-foreground flex items-center gap-4 text-base leading-6">
+        <input type="hidden" name={@name} value="false" />
         <input
           type="checkbox"
           id={@id}
           name={@name}
           value="true"
           checked={@checked}
-          class="rounded border-zinc-300 text-zinc-900 focus:ring-0"
+          class="border-border text-primary accent-primary rounded focus:ring-0"
           {@rest}
         />
         {@label}
@@ -330,15 +351,9 @@ defmodule ElixirPhoenixWeb.CoreComponents do
 
   def input(%{type: "select"} = assigns) do
     ~H"""
-    <div>
+    <div phx-feedback-for={@name}>
       <.label for={@id}>{@label}</.label>
-      <select
-        id={@id}
-        name={@name}
-        class="mt-2 block w-full rounded-md border border-gray-300 bg-white shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm"
-        multiple={@multiple}
-        {@rest}
-      >
+      <select id={@id} name={@name} class={base_input_classes(@errors)} multiple={@multiple} {@rest}>
         <option :if={@prompt} value="">{@prompt}</option>
         {Phoenix.HTML.Form.options_for_select(@options, @value)}
       </select>
@@ -349,18 +364,34 @@ defmodule ElixirPhoenixWeb.CoreComponents do
 
   def input(%{type: "textarea"} = assigns) do
     ~H"""
-    <div>
+    <div phx-feedback-for={@name}>
       <.label for={@id}>{@label}</.label>
-      <textarea
-        id={@id}
-        name={@name}
-        class={[
-          "mt-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6 min-h-[6rem]",
-          @errors == [] && "border-zinc-300 focus:border-zinc-400",
-          @errors != [] && "border-rose-400 focus:border-rose-400"
-        ]}
-        {@rest}
-      >{Phoenix.HTML.Form.normalize_value("textarea", @value)}</textarea>
+      <textarea id={@id} name={@name} class={base_input_classes(@errors)} {@rest}><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>
+      <.error :for={msg <- @errors}>{msg}</.error>
+    </div>
+    """
+  end
+
+  def input(%{type: "date-range"} = assigns) do
+    ~H"""
+    <div phx-feedback-for={@name}>
+      <.label for={@id}>{@label}</.label>
+      <input id={"##{@id}-from-date"} name={"#{@name}-from-date"} type="hidden" />
+      <input id={"##{@id}-to-date"} name={"#{@name}-to-date"} type="hidden" />
+      <div class="relative">
+        <input
+          type="text"
+          name={@name}
+          id={@id}
+          phx-hook="DateRange"
+          value={Phoenix.HTML.Form.normalize_value(@type, @value)}
+          class={[base_input_classes(@errors), "relative cursor-pointer"]}
+          {@rest}
+        />
+        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+          <.icon name="hero-calendar" class="text-foreground h-5 w-5" />
+        </div>
+      </div>
       <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """
@@ -369,24 +400,28 @@ defmodule ElixirPhoenixWeb.CoreComponents do
   # All other inputs text, datetime-local, url, password, etc. are handled here...
   def input(assigns) do
     ~H"""
-    <div>
+    <div phx-feedback-for={@name}>
       <.label for={@id}>{@label}</.label>
       <input
         type={@type}
         name={@name}
         id={@id}
         value={Phoenix.HTML.Form.normalize_value(@type, @value)}
-        class={[
-          "mt-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6",
-          @errors == [] && "border-zinc-300 focus:border-zinc-400",
-          @errors != [] && "border-rose-400 focus:border-rose-400"
-        ]}
+        class={[base_input_classes(@errors)]}
         {@rest}
       />
       <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """
   end
+
+  defp base_input_classes(errors),
+    do: [
+      "text-foreground mt-2 block w-full border-b-2 border-primary outline-none",
+      "phx-no-feedback:border-border phx-no-feedback:focus:border-border",
+      errors == [] && "border-border focus:border-border",
+      errors != [] && "border-destructive-foreground focus:border-destructive-foreground"
+    ]
 
   @doc """
   Renders a label.
@@ -396,7 +431,7 @@ defmodule ElixirPhoenixWeb.CoreComponents do
 
   def label(assigns) do
     ~H"""
-    <label for={@for} class="block text-sm font-semibold leading-6 text-zinc-800">
+    <label for={@for} class="text-accent-foreground block text-base font-semibold leading-6">
       {render_slot(@inner_block)}
     </label>
     """
@@ -409,7 +444,7 @@ defmodule ElixirPhoenixWeb.CoreComponents do
 
   def error(assigns) do
     ~H"""
-    <p class="mt-3 flex gap-3 text-sm leading-6 text-rose-600">
+    <p class="text-destructive-foreground mt-3 flex gap-3 text-sm leading-6 phx-no-feedback:hidden">
       <.icon name="hero-exclamation-circle-mini" class="mt-0.5 h-5 w-5 flex-none" />
       {render_slot(@inner_block)}
     </p>
@@ -429,10 +464,10 @@ defmodule ElixirPhoenixWeb.CoreComponents do
     ~H"""
     <header class={[@actions != [] && "flex items-center justify-between gap-6", @class]}>
       <div>
-        <h1 class="text-lg font-semibold leading-8 text-zinc-800">
+        <h1 class="text-lg font-semibold leading-8 text-inherit">
           {render_slot(@inner_block)}
         </h1>
-        <p :if={@subtitle != []} class="mt-2 text-sm leading-6 text-zinc-600">
+        <p :if={@subtitle != []} class="text-muted-foreground mt-2 text-sm leading-6">
           {render_slot(@subtitle)}
         </p>
       </div>
@@ -447,8 +482,8 @@ defmodule ElixirPhoenixWeb.CoreComponents do
   ## Examples
 
       <.table id="users" rows={@users}>
-        <:col :let={user} label="id">{user.id}</:col>
-        <:col :let={user} label="username">{user.username}</:col>
+        <:col :let={user} label="id"><%= user.id %></:col>
+        <:col :let={user} label="username"><%= user.username %></:col>
       </.table>
   """
   attr :id, :string, required: true
@@ -475,38 +510,36 @@ defmodule ElixirPhoenixWeb.CoreComponents do
     ~H"""
     <div class="overflow-y-auto px-4 sm:overflow-visible sm:px-0">
       <table class="w-[40rem] mt-11 sm:w-full">
-        <thead class="text-sm text-left leading-6 text-zinc-500">
+        <thead class="text-accent0 text-left text-sm leading-6">
           <tr>
-            <th :for={col <- @col} class="p-0 pb-4 pr-6 font-normal">{col[:label]}</th>
-            <th :if={@action != []} class="relative p-0 pb-4">
-              <span class="sr-only">{gettext("Actions")}</span>
-            </th>
+            <th :for={col <- @col} class="p-0 pr-6 pb-4 font-normal">{col[:label]}</th>
+            <th class="relative p-0 pb-4"><span class="sr-only">{gettext("Actions")}</span></th>
           </tr>
         </thead>
         <tbody
           id={@id}
           phx-update={match?(%Phoenix.LiveView.LiveStream{}, @rows) && "stream"}
-          class="relative divide-y divide-zinc-100 border-t border-zinc-200 text-sm leading-6 text-zinc-700"
+          class="divide-border border-primary text-accent-foreground relative divide-y border-t text-sm leading-6"
         >
-          <tr :for={row <- @rows} id={@row_id && @row_id.(row)} class="group hover:bg-zinc-50">
+          <tr :for={row <- @rows} id={@row_id && @row_id.(row)} class="group border-primary hover:bg-primary/30">
             <td
               :for={{col, i} <- Enum.with_index(@col)}
               phx-click={@row_click && @row_click.(row)}
               class={["relative p-0", @row_click && "hover:cursor-pointer"]}
             >
               <div class="block py-4 pr-6">
-                <span class="absolute -inset-y-px right-0 -left-4 group-hover:bg-zinc-50 sm:rounded-l-xl" />
-                <span class={["relative", i == 0 && "font-semibold text-zinc-900"]}>
+                <span class="absolute -inset-y-px right-0 -left-4 group-hover:bg-accent sm:rounded-l-xl" />
+                <span class={["relative", i == 0 && "text-foreground font-semibold"]}>
                   {render_slot(col, @row_item.(row))}
                 </span>
               </div>
             </td>
             <td :if={@action != []} class="relative w-14 p-0">
               <div class="relative whitespace-nowrap py-4 text-right text-sm font-medium">
-                <span class="absolute -inset-y-px -right-4 left-0 group-hover:bg-zinc-50 sm:rounded-r-xl" />
+                <span class="absolute -inset-y-px -right-4 left-0 group-hover:bg-accent sm:rounded-r-xl" />
                 <span
                   :for={action <- @action}
-                  class="relative ml-4 font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
+                  class="text-foreground relative ml-4 font-semibold leading-6 hover:text-accent-foreground"
                 >
                   {render_slot(action, @row_item.(row))}
                 </span>
@@ -519,14 +552,100 @@ defmodule ElixirPhoenixWeb.CoreComponents do
     """
   end
 
+  @doc ~S"""
+  Renders a flexible list layout using flexbox.
+  ## Examples
+        <.flex_list id="areas" rows={@streams.areas}>
+        <:col :let={{_id, area}} label="Name">
+          <.link navigate={~p"/admin/areas/#{area}"} class="block w-full">
+            <%= area.name %>
+          </.link>
+        </:col>
+        <:action :let={{_id, area}}>
+          <.link navigate={~p"/admin/areas/#{area}"}>
+            <.icon name="hero-arrow-right" class="h-5 w-5" />
+          </.link>
+        </:action>
+      </.flex_list>
+"""
+attr :id, :string, required: true
+attr :rows, :list, required: true
+attr :row_id, :any, default: nil, doc: "the function for generating the row id"
+attr :row_click, :any, default: nil, doc: "the function for handling phx-click on each row"
+
+attr :row_item, :any,
+  default: &Function.identity/1,
+  doc: "the function for mapping each row before calling the :col and :action slots"
+
+slot :col, required: true do
+  attr :label, :string
+end
+
+slot :action, doc: "the slot for showing user actions"
+
+def flex_list(assigns) do
+  assigns =
+    with %{rows: %Phoenix.LiveView.LiveStream{}} <- assigns do
+      assign(assigns, row_id: assigns.row_id || fn {id, _item} -> id end)
+    end
+
+  ~H"""
+  <div class="overflow-y-auto px-4 sm:overflow-visible sm:px-0">
+    <div class="w-[40rem] mt-11 sm:w-full">
+      <%!-- Header row --%>
+      <div class="flex items-center text-left text-sm leading-6 text-accent0 border-b border-primary pb-4">
+        <div :for={col <- @col} class="flex-1 pr-6 font-normal">
+          <%= col[:label] %>
+        </div>
+        <div class="w-32">
+          <span class="sr-only"><%= gettext("Actions") %></span>
+        </div>
+      </div>
+      <%!-- List items --%>
+      <div
+        id={@id}
+        phx-update={match?(%Phoenix.LiveView.LiveStream{}, @rows) && "stream"}
+        class="divide-y divide-border"
+      >
+        <div
+          :for={row <- @rows}
+          id={@row_id && @row_id.(row)}
+          class="group hover:bg-primary/30"
+        >
+          <div class="flex items-center py-4 text-sm leading-6 text-accent-foreground">
+            <div
+              :for={{col, i} <- Enum.with_index(@col)}
+              phx-click={@row_click && @row_click.(row)}
+              class={["flex-1 pr-6", @row_click && "hover:cursor-pointer"]}
+            >
+              <span class={["relative", i == 0 && "font-semibold text-foreground"]}>
+                <%= render_slot(col, @row_item.(row)) %>
+              </span>
+            </div>
+            <div :if={@action != []} class="w-32 flex justify-end gap-3">
+              <span
+                :for={action <- @action}
+                class="relative font-semibold text-foreground hover:text-accent-foreground"
+              >
+                <%= render_slot(action, @row_item.(row)) %>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  """
+end
+
   @doc """
   Renders a data list.
 
   ## Examples
 
       <.list>
-        <:item title="Title">{@post.title}</:item>
-        <:item title="Views">{@post.views}</:item>
+        <:item title="Title"><%= @post.title %></:item>
+        <:item title="Views"><%= @post.views %></:item>
       </.list>
   """
   slot :item, required: true do
@@ -536,10 +655,10 @@ defmodule ElixirPhoenixWeb.CoreComponents do
   def list(assigns) do
     ~H"""
     <div class="mt-14">
-      <dl class="-my-4 divide-y divide-zinc-100">
-        <div :for={item <- @item} class="flex gap-4 py-4 text-sm leading-6 sm:gap-8">
-          <dt class="w-1/4 flex-none text-zinc-500">{item.title}</dt>
-          <dd class="text-zinc-700">{render_slot(item)}</dd>
+      <dl class="divide-border -my-4 divide-y">
+        <div :for={item <- @item} class="flex gap-4 py-4 text-sm leading-6 border-primary sm:gap-8">
+          <dt class="text-accent0 w-1/4 flex-none">{item.title}</dt>
+          <dd class="text-accent-foreground">{render_slot(item)}</dd>
         </div>
       </dl>
     </div>
@@ -558,10 +677,10 @@ defmodule ElixirPhoenixWeb.CoreComponents do
 
   def back(assigns) do
     ~H"""
-    <div class="mt-16">
+    <div class="mt-6 mb-6">
       <.link
         navigate={@navigate}
-        class="text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
+        class="text-foreground text-sm font-semibold leading-6 hover:text-accent-foreground"
       >
         <.icon name="hero-arrow-left-solid" class="h-3 w-3" />
         {render_slot(@inner_block)}
@@ -574,14 +693,14 @@ defmodule ElixirPhoenixWeb.CoreComponents do
   Renders a [Heroicon](https://heroicons.com).
 
   Heroicons come in three styles – outline, solid, and mini.
-  By default, the outline style is used, but solid and mini may
+  By default, the outline style is used, but solid an mini may
   be applied by using the `-solid` and `-mini` suffix.
 
   You can customize the size and colors of the icons by setting
   width, height, and background color classes.
 
-  Icons are extracted from the `deps/heroicons` directory and bundled within
-  your compiled app.css by the plugin in your `assets/tailwind.config.js`.
+  Icons are extracted from your `assets/vendor/heroicons` directory and bundled
+  within your compiled app.css by the plugin in your `assets/tailwind.config.js`.
 
   ## Examples
 
@@ -602,10 +721,8 @@ defmodule ElixirPhoenixWeb.CoreComponents do
   def show(js \\ %JS{}, selector) do
     JS.show(js,
       to: selector,
-      time: 300,
       transition:
-        {"transition-all transform ease-out duration-300",
-         "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95",
+        {"transition-all transform ease-out duration-300", "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95",
          "opacity-100 translate-y-0 sm:scale-100"}
     )
   end
@@ -615,8 +732,7 @@ defmodule ElixirPhoenixWeb.CoreComponents do
       to: selector,
       time: 200,
       transition:
-        {"transition-all transform ease-in duration-200",
-         "opacity-100 translate-y-0 sm:scale-100",
+        {"transition-all transform ease-in duration-200", "opacity-100 translate-y-0 sm:scale-100",
          "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"}
     )
   end
@@ -626,7 +742,6 @@ defmodule ElixirPhoenixWeb.CoreComponents do
     |> JS.show(to: "##{id}")
     |> JS.show(
       to: "##{id}-bg",
-      time: 300,
       transition: {"transition-all transform ease-out duration-300", "opacity-0", "opacity-100"}
     )
     |> show("##{id}-container")
@@ -672,5 +787,144 @@ defmodule ElixirPhoenixWeb.CoreComponents do
   """
   def translate_errors(errors, field) when is_list(errors) do
     for {^field, {msg, opts}} <- errors, do: translate_error({msg, opts})
+  end
+
+  attr :class, :any, default: nil
+
+  slot :inner_block
+
+  def container(assigns) do
+    ~H"""
+    <div class={["mx-auto w-full px-4 sm:max-w-3xl sm:px-6 lg:px-8", @class]}>
+      {render_slot(@inner_block)}
+    </div>
+    """
+  end
+
+  attr :class, :string, default: ""
+
+  def spinner(assigns) do
+    ~H"""
+    <p class="ml-2 flex flex-row items-center text-sm">
+      <svg
+        class="mr-3 -ml-1 h-4 w-4 animate-spin"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+        </circle>
+        <path
+          class="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        >
+        </path>
+      </svg>
+      <span class="sr-only">Loading...</span>
+    </p>
+    """
+  end
+
+  attr(:id, :string, required: true)
+
+  attr(:class, :string, default: "")
+  attr(:dropdown_class, :string, default: "")
+  attr(:placement, :string, default: "left", values: ["left", "right"])
+  attr(:rest, :global)
+  slot(:button)
+
+  slot :item do
+    attr(:role, :string)
+  end
+
+  def dropdown_menu(assigns) do
+    ~H"""
+    <div class="relative">
+      {render_slot(@button, %{
+        "phx-click": toggle_menu("##{@id}"),
+        id: "#{@id}-button",
+        "aria-expanded": "false",
+        "aria-haspopup": "true"
+      })}
+
+      <div
+        id={@id}
+        data-button-id={@id <> "-button"}
+        class={[placement_class(@placement), "bg-background text-foreground border-border absolute z-30 mt-2 hidden w-max overflow-visible rounded-lg border p-0 shadow-md focus:outline-none", @class]}
+        role="menu"
+        aria-orientation="vertical"
+        aria-labelledby={@id <> "-button"}
+        phx-click-away={toggle_menu("##{@id}")}
+      >
+        <.focus_wrap id={@id <> "-focus"}>
+          <ul :if={not Enum.empty?(@item)} role="list" {@rest} class={@dropdown_class}>
+            <li :for={item <- @item} class="flex flex-col" role={item[:role] || "listitem"}>
+              {render_slot(item)}
+            </li>
+          </ul>
+          {render_slot(@inner_block)}
+          <ul :if={not Enum.empty?(@item)} role="list" {@rest} class={@dropdown_class}>
+            <li :for={item <- @item} class="flex flex-col" role={item[:role] || "listitem"}>
+              {render_slot(item)}
+            </li>
+          </ul>
+        </.focus_wrap>
+      </div>
+    </div>
+    """
+  end
+
+  defp placement_class("left"), do: "left-auto right-0 origin-top-right"
+  defp placement_class("right"), do: "left-0 right-auto origin-top-left"
+
+  defp toggle_menu(js \\ %JS{}, id) do
+    js
+    |> JS.toggle_class("hidden", to: "#{id}")
+    |> JS.toggle_class("text-accent-foreground", to: "#{id}-button")
+  end
+
+  attr :class, :any, default: ""
+  attr :rest, :global, default: %{}, include: ~w(href navigate patch)
+  slot :inner_block, required: true
+
+  def dropdown_menu_link(assigns) do
+    ~H"""
+    <.link
+      class={["flex items-center rounded-lg bg-white px-3 py-1.5 text-sm no-underline hover:bg-accent focus:ring-0", @class]}
+      {@rest}
+    >
+      {render_slot(@inner_block)}
+    </.link>
+    """
+  end
+
+  attr :orientation, :string, values: ~w(vertical horizontal), default: "horizontal"
+  attr :class, :any, default: nil
+  attr :rest, :global, include: ~w(disabled form name value)
+
+  def separator(assigns) do
+    ~H"""
+    <div
+      class={["bg-border shrink-0", (@orientation == "horizontal" && "h-[1px] w-full") || "w-[1px] h-full", @class]}
+      {@rest}
+    >
+    </div>
+    """
+  end
+
+  attr :class, :string, default: ""
+  attr :rest, :global, include: ~w(patch navigate href)
+
+  slot :inner_block
+
+  def card_link(assigns) do
+    ~H"""
+    <.link class={["group text-center", @class]} {@rest}>
+      <div class="bg-secondary text-secondary-foreground relative flex cursor-pointer flex-col items-center justify-center gap-y-2 rounded-lg py-6 text-center text-lg font-bold uppercase group-hover:bg-secondary-hover">
+        {render_slot(@inner_block)}
+      </div>
+    </.link>
+    """
   end
 end

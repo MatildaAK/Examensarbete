@@ -1,0 +1,9 @@
+<main>
+  <.page_header :if={assigns[:title]} class="mt-6">
+    <div class="relative p-2 text-center text-2xl">{@title}</div>
+  </.page_header>
+
+  <.flash_group flash={@flash} />
+
+  {@inner_content}
+</main>

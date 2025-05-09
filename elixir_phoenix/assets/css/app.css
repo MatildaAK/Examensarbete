@@ -1,5 +1,54 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@import "./fonts.css";
+@import "tailwindcss";
 
-/* This file is for your main application CSS */
+@plugin "../js/plugins//heroicons-plugin.js";
+
+@source "../js/**/*.js";
+@source "../../lib/*_web.ex";
+@source "../../lib/*_web/**/*.*ex";
+
+
+@theme {
+  --color-primary: oklch(71.82% 0.1068 199.73);
+  --color-primary-foreground: var(--color-white);
+  --color-secondary: oklch(51.68% 0.1384 329.36);
+  --color-secondary-foreground: var(--color-white);
+  --color-secondary-hover: oklch(66.85% 0.1481 327.5);
+  --color-tertiary: oklch(66.64% 0.2201 37.57);
+  --color-tertiary-foreground: var(--color-white);
+  --color-destructive: var(--color-rose[50]);
+  --color-destructive-foreground: var(--color-rose[700]);
+  --color-foreground: var(--colors-zinc[900]);
+
+  --font-proxima: "proxima_nova_condensedregular";
+  --font-brauerBlack: "BrauerLLWeb-Black";
+  --font-brauerBold: "BrauerLLWeb-Bold";
+  --font-brauerRegular: "BrauerLLWeb-Regular";
+}
+
+@layer base {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+    
+  *:hover {
+    scrollbar-color: #c2c2c2 transparent;
+  }
+  
+  /* Chrome, Edge, and Safari */
+  *::-webkit-scrollbar {
+    width: 6px;
+    background-color: transparent;
+  }
+  
+  *::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 5px;
+  }
+  
+  *::-webkit-scrollbar-thumb {
+    background-color: #c2c2c2;
+    border-radius: 14px;
+  }
+}
