@@ -18,7 +18,6 @@ defmodule ExamenBackend.Hotels do
 
   Raises `Ecto.NoResultsError` if the hotel does not exist.
   """
-  #def get_hotel!(tenant, id), do: Repo.get!(hotels, id)
   def get_hotel!(id, opts) do
     Hotel
     |> Repo.get!(id, opts)
@@ -77,10 +76,6 @@ defmodule ExamenBackend.Hotels do
     |> HotelRoom.changeset(attrs, opts)
     |> Repo.update(opts)
   end
-
-  # def change_hotel_room(%HotelRoom{} = hotel_room, attrs, opts \\ []) do
-  #  HotelRoom.changeset(hotel_room, attrs, opts)
-  # end
 
   def delete_hotel_room(%HotelRoom{} = hotel_room, opts \\ []) do
     Repo.delete(hotel_room, opts)

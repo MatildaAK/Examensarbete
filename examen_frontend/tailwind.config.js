@@ -22,18 +22,12 @@ export default {
     },
     colors: {
       hoverOnLink: "#B5C0F8",
-      darkPurple: "#06020D",
-      halfDarkpurple: "#252C54",
       textColor: "#ffffff",
-      //primary = blue
       secondaryColor: "#92468e",
       primaryColor: "#3bb8be",
-      //third = red
       thirdColor: "#db2c18",
-      //darker shade of primary
       hoverOnButton: "#c471c3",
       hoverDangerButton: "#FC5D41",
-      textGray: "#979797",
       borderShade: "#d9d9d9"
     },
   },
