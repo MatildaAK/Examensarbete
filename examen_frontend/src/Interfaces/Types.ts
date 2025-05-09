@@ -1,13 +1,15 @@
 export interface UserBase {
-    name: string;
+    user_name: string;
     email: string;
+    password: string;
+    name: string;
   }
   
   export interface User extends UserBase {
-    id: number;
+    id: string;
   }
   
   export interface NewUser extends UserBase {
-    id?: undefined;
+    id?: string;
   }
   

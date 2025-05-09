@@ -3,34 +3,30 @@ import Button from "../components/core/Button";
 import Input from "../components/core/Input";
 import { NewUser, User } from "../Interfaces/Types";
 
-// interface UserFormProps {
-//   initialUser?: User | NewUser;
-//   onSubmit: (user: User | NewUser) => Promise<void>
-//   submitText?: string;
-// }
-
-interface UserFormProps<T extends User | NewUser> {
-  initialUser?: T;
-  onSubmit: (user: T) => Promise<void>;
+interface UserFormProps<TUser extends User | NewUser> {
+  initialUser?: TUser;
+  onSubmit: (user: TUser) => Promise<void>;
   submitText?: string;
 }
 
-
-const UserForm = <T extends User | NewUser>({
+const UserForm = <TUser extends User | NewUser>({
   initialUser,
   onSubmit,
   submitText = "Spara",
-}: UserFormProps<T>) => {
+}: UserFormProps<TUser>) => {
+  const [user_name, setUserName] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (initialUser) {
-      console.log("🔍 initialUser i form:", initialUser);
+      setUserName(initialUser.user_name);
       setName(initialUser.name);
       setEmail(initialUser.email);
+      setPassword(initialUser.password);
     }
   }, [initialUser]);
 
@@ -39,26 +35,22 @@ const UserForm = <T extends User | NewUser>({
     setLoading(true);
     setError("");
 
-  //   try {
-  //     await onSubmit({ id: initialUser?.id, name, email });
-  //   } catch (err) {
-  //     setError("Något gick fel.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   try {
     if (initialUser && "id" in initialUser) {
       await onSubmit({
         id: initialUser.id,
-        name,
+        user_name,
         email,
-      } as T);
+        name,
+        password,
+      } as TUser);
     } else {
       await onSubmit({
-        name,
+        user_name,
         email,
-      } as T);
+        password,
+        name,
+      } as TUser);
     }
   } catch (err) {
     setError("Något gick fel.");
@@ -70,19 +62,33 @@ const UserForm = <T extends User | NewUser>({
   return (
     <form onSubmit={handleSubmit}>
       {error && <p className="text-thirdColor">{error}</p>}
-      <label htmlFor="name">Namn</label>
       <Input
         type="text"
+        label="Användar namn"
+        value={user_name}
+        onChange={(e) => setUserName(e.target.value)}
+        name="username"
+      />
+      <Input
+        type="text"
+        label="Namn"
         value={name}
         onChange={(e) => setName(e.target.value)}
         name="name"
       />
-      <label htmlFor="email">Email</label>
       <Input
         type="email"
+        label="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         name="email"
+      />
+      <Input
+        type="password"
+        label="Lösenord"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        name="password"
       />
       <Button
         type="submit"

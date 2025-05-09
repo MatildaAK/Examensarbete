@@ -30,7 +30,7 @@ const Table = <T extends { id: string | number }>({
         <thead className="text-sm leading-6">
           <tr>
             {columns.map((col, i) => (
-              <th key={i} className="pr-6 pb-4 font-normal">
+              <th key={i} className="pr-6 pb-4 font-normal text-start">
                 {col.label}
               </th>
             ))}
@@ -53,7 +53,7 @@ const Table = <T extends { id: string | number }>({
                   onClick={() => onRowClick?.(item)}
                   className={`relative ${onRowClick ? "cursor-pointer group-hover:bg-primaryColor/30" : ""}`}
                 >
-                  <div className="block py-4">
+                  <div className="block py-4 text-start">
                     <span className="absolute -inset-y-px right-0 -left-4 sm:rounded-l-xl" />
                     <span className={`relative ${i === 0 ? "font-semibold" : ""}`}>
                       {col.render(item)}
@@ -63,7 +63,7 @@ const Table = <T extends { id: string | number }>({
               ))}
               {actions.length > 0 && (
                 <td className="relative w-14">
-                  <div className="relative whitespace-nowrap py-4 text-right text-sm font-medium">
+                  <div className="relative whitespace-nowrap py-4 text-sm font-medium">
                     <span className="absolute -inset-y-px -right-4 left-0 sm:rounded-r-xl" />
                     {actions.map((action, i) => (
                       <span

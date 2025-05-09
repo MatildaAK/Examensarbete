@@ -1,11 +1,9 @@
 interface ButtonProps {
     children: React.ReactNode;
     type: "button" | "submit";
-    variant?: "primary" | "secondary" | "danger";
+    variant?: "primary" | "danger";
     size?: "small";
     onClick?: (event: React.MouseEvent<HTMLElement>) => void;
-    filterButton?: "filterButton";
-    filterItem?: "filterItem";
   }
 
   const Button: React.FC<ButtonProps> = ({
@@ -14,7 +12,6 @@ interface ButtonProps {
     variant,
     size,
     onClick,
-    filterButton
   }) => {
     return (
         <>
@@ -26,23 +23,7 @@ interface ButtonProps {
               type={type}
               onClick={onClick}
             >
-              <div
-                className={`flex flex-row ${
-                  filterButton ? "justify-between pr-4 pl-4" : "justify-center"
-                } items-center `}
-              >
-                {filterButton ? (
-                  <>
-                    <div className="flex flex-row items-center">
-                      {children}
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    {children}
-                  </>
-                )}
-              </div>
+              {children}
             </button>
           ) : (
             <button

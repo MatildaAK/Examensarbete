@@ -10,7 +10,7 @@ import UserForm from "./UserFormComponent";
 import { User } from "../Interfaces/Types";
 import { updateUser } from "./User";
 
-const ShowUser: React.FC = () => {
+const UserShow: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -21,7 +21,16 @@ const ShowUser: React.FC = () => {
   useEffect(() => {
     if (!id) return;
 
-    fetch(`${BASE_URL}/users/${id}`)
+    const token = localStorage.getItem('token');
+    const tenant = localStorage.getItem("tenant");
+
+    fetch(`${BASE_URL}/users/${id}`, {
+        method: 'GET',
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "X-Tenant": `${tenant}`,
+        },
+    })
       .then((res) => {
         if (!res.ok) throw new Error("Kunde inte hämta användare");
         return res.json();
@@ -42,7 +51,7 @@ const ShowUser: React.FC = () => {
       return;
     }
   
-    const updated = await updateUser(userToSave.id, userToSave.name, userToSave.email);
+    const updated = await updateUser(userToSave.id, userToSave.user_name, userToSave.email, userToSave.name, userToSave.password);
     setUser(updated);
     setModalOpen(false);
   };
@@ -52,7 +61,7 @@ const ShowUser: React.FC = () => {
   if (error) return <p>Något gick fel: {error}</p>;
   if (!user) return <p>Ingen användare hittades.</p>;
 
-  const deleteUser = async (id: number) => {
+  const deleteUser = async (id: string) => {
     const confirmDelete = window.confirm(
       "Är du säker på att du vill ta bort denna användare?"
     );
@@ -78,11 +87,12 @@ const ShowUser: React.FC = () => {
         <Back>Tillbaka till Lista</Back>
       </div>
       <h1 className="text-2xl font-bold mb-4 text-start">
-        Användare {user.name}
+        Användare {user.user_name}
       </h1>
       <List
       items={[
-        { title: "Name", value: user.name },
+        { title: "Namn", value: user.name },
+        { title: "Användar namn", value: user.user_name },
         { title: "Email", value: user.email },
       ]}
       renderSlot={(item) => item.value}
@@ -95,7 +105,7 @@ const ShowUser: React.FC = () => {
           size="small"
           variant="danger"
         >
-          Delete
+          Radera
         </Button>
 
         <Button
@@ -104,7 +114,7 @@ const ShowUser: React.FC = () => {
           variant="primary"
           size="small"
         >
-          Uppdatera användare
+          Uppdatera
         </Button>
         <Modal isOpen={modalOpen} onClose={() => {
           setModalOpen(false);
@@ -120,4 +130,4 @@ const ShowUser: React.FC = () => {
   );
 };
 
-export default ShowUser;
+export default UserShow;
