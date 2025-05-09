@@ -1,6 +1,4 @@
-Skriv vad och hur vi gör 
-
-vi försöker att följa samma struktur och användar sett som vi har gjorti QH detta för att vi ska kunna koppla ihop React med denna databas.
+Vi försöker att följa samma struktur och användar sett som vi har gjorti QH detta för att vi ska kunna koppla ihop React med denna databas.
 
 # Frontend och Backend
 
@@ -9,17 +7,21 @@ vi försöker att följa samma struktur och användar sett som vi har gjorti QH 
 1. [Starta projekt](#startproject)
 2. [Databaskoppling](#databaskoppling)
 3. [Controllers](#controllers)
-4. [Routes](#routes)
-5. [BCrypt](#bcrypt)
+4. [Modul](#modul)
+5. [Routes](#routes)
 6. [Komponenter](#komponenter)
-7. [CLSX](#clsx)
+7. [BCrypt](#bcrypt)
+8. [CLSX](#clsx)
+9. [Mockdata](#mockdata)
+10. [UseState](#useState)
+11. [UseEffect](#useEffect)
 
 Vi har byggt Våran React applikation baserat på det vi har i Elixir / Phoenix LiveView, så den består av olika komponenter som vi kan använda på flera ställen. Detta för att försöka minska duppliceringen av kod. Vi använder oss av komponenter och props för att vi har arbetat med tidigare och tycker det är smidit och när projektet växer är det smidigt att kunna använda samma kod på flera ställen ett att behöva dupplicera koden på alla ställen där det används.
 
 
-### Starta projekt
+## Starta projekt
 
-Se hur i [README](/examen_frontend/README.md)
+Se hur i [README](/README.md)
 
 starta servern:
 
@@ -37,7 +39,7 @@ Windows:
 iex.bat -S mix phx.server
 ```
 
-### Databaskoppling
+## Databaskoppling
 vi har återanvänt samma kodbas så långt det går i backenden, så att den är den samma här som i QH för att skapa tenant, användare samt hotell i terminalen.
 
 För att frontenden ska kunna kommunicera med backenden har vi definierat vår *Base_url* i Config.ts, vilket gör det enkelt att hantera URL:en centralt.
@@ -51,7 +53,7 @@ Backenden är byggd med Elixir och Phoenix LiveView, och använder PostgreSQL so
     headers: ["Authorization", "Content-Type", "X-Tenant"]
 ```
 
-### Controllers
+## Controllers
 I vår backend, som är byggd med Elixir och webbramverket Phoenix, använder vi så kallade controllers för att hantera HTTP-förfrågningar till vår API. Varje controller ansvarar för en resurstyp – i det här fallet [hotellrum](/examen_backend/lib/examen_backend_web/controllers/hotel_room_controller.ex). En controller består av olika funktioner, en för varje typ av operation: hämta alla, hämta en, skapa, uppdatera och ta bort.
 
 Kort om varje funktion:
@@ -78,7 +80,46 @@ Exempel:
 
 När frontend skickar en POST-förfrågan med data för att skapa ett nytt hotellrum, hamnar den i create/2. Den använder Hotels.create_hotel_room/2 för att skapa hotellet i databasen, och returnerar sedan svaret som JSON.
 
-### Routes
+## Modul
+En modul i Elixir är ett sätt att gruppera relaterade funktioner under ett gemensamt namn. Det är ungefär som en klass i objektorienterade språk – fast utan objekt och tillstånd. Istället för att skapa instanser, definierar man funktioner direkt i modulen som man sedan kan anropa.
+Moduler definieras med defmodule och kompileras till Erlang-moduler under huven, vilket gör dem mycket snabba och kompatibla med BEAM (Erlang Virtual Machine).
+
+Moduler används för att:
+* Strukturera kod i logiska enheter (t.ex. [User](/examen_backend/lib/examen_backend/users.ex), [Hotel](/examen_backend/lib/examen_backend/hotels.ex))
+* Återanvända funktioner
+* Undvika namnkonflikter
+* Separera ansvar i större system
+
+```elixir
+defmodule ExamenBackend.Users do
+  import Ecto.Query, warn: false
+
+  alias ExamenBackend.Repo
+
+  def list_users(opts) do
+    Repo.all(User, opts)
+  end
+end
+```
+* *defmodule* definierar ett nytt namnrum.
+* *def* definierar en publikt synlig funktion inom modulen.
+* Funktioner är stateless och alltid pure om du inte anropar IO eller externa system.
+
+Exempel på hur vi hämtar en funktion från modulen:
+```elixir
+ alias ExamenBackend.Users
+
+ users = Users.list_users([prefix: conn.assigns.tenant])
+```
+
+Till skillnad från objektorienterade språk, där tillstånd ofta kapslas in i objekt, är moduler i Elixir rena funktionella containers. De innehåller inga instanser, ingen intern state, och varje funktionsanrop är oberoende.
+
+Detta gör att:
+* Kod blir enklare att testa
+* Det inte finns några sidoeffekter utan explicita IO-anrop
+* All tillståndshantering sker via immutabla datastrukturer
+
+## Routes
 I vår Phoenix-applikation definierar vi så kallade routes (vägar) som kopplar inkommande HTTP-förfrågningar till specifika funktioner i våra controllers. Dessa routes beskriver vilket URL-mönster och HTTP-metod som ska anropa vilken funktion.
 
 Här är ett exempel för hotell:
@@ -111,47 +152,7 @@ Här är ett exempel för hotell:
 #### Varför är detta viktigt?
 Dessa routes fungerar som kopplingen mellan frontend och backend. När t.ex. frontend skickar en förfrågan till /hotel/5 med metoden GET, vet Phoenix att det är HotelController.show/2 som ska anropas – och den funktionen ansvarar för att hämta hotell med ID 5 och returnera det som JSON.
 
-### BCrypt
-Vi använder oss av biblioteket bcrypt_elixir i backend för att hasha användarnas lösenord.
-Detta bibliotek är en wrapper runt C-biblioteket bcrypt, vilket innebär att det kräver en fungerande C-kompilator för att kunna byggas.
-
-#### Krav för Windows
-
-Eftersom bcrypt_elixir kompileras från källkod behöver du ha rätt utvecklingsverktyg installerade. På Windows krävs delar från Visual Studio Installer:
-
-1. Installera [Visual Studio Build Tool](https://visualstudio.microsoft.com/downloads/) 
-2. Under installationen, välj:
-      * Desktop development with C++ 
-        * C++ CMake tools for Windows
-        * Windows 11 eller 10 SDK (välj den senaste)
-        * MSVC v143 - VS 2022 C++
-
-Vanligt felmeddelande vid användande av bcrypt
-
-När vi först körde mix deps.get och försökte kompilera projektet stötte vi på följande fel:
-```bash
-could not compile dependency :bcrypt_elixir, "mix compile" failed. Errors may have been logged above. You can recompile this dependency with "mix deps.compile
-
-(Mix) Could not compile with "nmake" (exit status: 2). One option is to install a recent version of Visual C++ Build Tools either manually or using Chocolatey - choco install VisualCppBuildTools.
-```
-
-För att lösa detta krävs att Visual Studio-kompilatorn är korrekt laddad i din terminalsession.
-* Öppna Command Prompt (cmd)
-* Kör kommandot nedan för att ladda rätt miljövariabler (anpassa sökvägen om din installation ligger någon annanstans):
-```mathematica
-cmd /K "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvarsall.bat"
-```
-
-I samma terminal, kör:
-```bash
-mix deps.clean bcrypt_elixir --all 
-mix deps.get 
-mix deps.compile 
-```
-
-Efter detta bör bcrypt_elixir kompileras korrekt.
-
-### Komponenter
+## Komponenter
 
 Komponenter vi skapat.
 * [Back](#back)
@@ -344,7 +345,47 @@ Hur det kan användas:
 />
 ```
 
-### CLSX
+## BCrypt
+Vi använder oss av biblioteket bcrypt_elixir i backend för att hasha användarnas lösenord.
+Detta bibliotek är en wrapper runt C-biblioteket bcrypt, vilket innebär att det kräver en fungerande C-kompilator för att kunna byggas.
+
+#### Krav för Windows
+
+Eftersom bcrypt_elixir kompileras från källkod behöver du ha rätt utvecklingsverktyg installerade. På Windows krävs delar från Visual Studio Installer:
+
+1. Installera [Visual Studio Build Tool](https://visualstudio.microsoft.com/downloads/) 
+2. Under installationen, välj:
+      * Desktop development with C++ 
+        * C++ CMake tools for Windows
+        * Windows 11 eller 10 SDK (välj den senaste)
+        * MSVC v143 - VS 2022 C++
+
+Vanligt felmeddelande vid användande av bcrypt
+
+När vi först körde mix deps.get och försökte kompilera projektet stötte vi på följande fel:
+```bash
+could not compile dependency :bcrypt_elixir, "mix compile" failed. Errors may have been logged above. You can recompile this dependency with "mix deps.compile
+
+(Mix) Could not compile with "nmake" (exit status: 2). One option is to install a recent version of Visual C++ Build Tools either manually or using Chocolatey - choco install VisualCppBuildTools.
+```
+
+För att lösa detta krävs att Visual Studio-kompilatorn är korrekt laddad i din terminalsession.
+* Öppna Command Prompt (cmd)
+* Kör kommandot nedan för att ladda rätt miljövariabler (anpassa sökvägen om din installation ligger någon annanstans):
+```mathematica
+cmd /K "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvarsall.bat"
+```
+
+I samma terminal, kör:
+```bash
+mix deps.clean bcrypt_elixir --all 
+mix deps.get 
+mix deps.compile 
+```
+
+Efter detta bör bcrypt_elixir kompileras korrekt.
+
+## CLSX
 I några av våra komponenter använder vi biblioteket clsx, som är ett lättviktsbibliotek för att kombinera och hantera CSS-klasser. clsx gör det enklare att conditionellt lägga till eller ta bort CSS-klasser baserat på logik, vilket minskar risken för att behöva hantera komplexa if-satser eller strängmanipuleringar för att bygga klasser manuellt.
 
 En vanlig användning är att kombinera standardklasser med dynamiska klasser, beroende på komponentens tillstånd eller props. Till exempel kan man använda clsx för att dynamiskt lägga till en klass baserat på om en komponent är aktiv, om den har en viss storlek, eller om en annan prop är satt. På så sätt blir koden mer läsbar och lättare att underhålla.
@@ -366,3 +407,62 @@ Exempel:
 Här kommer clsx att lägga till klassen btn-active om isActive är true, och btn-disabled om isDisabled är true. Det gör det möjligt att kombinera klasser på ett renare och mer hanterbart sätt.
 
 Eller som i vårat fall att vi använder det för att kunna lägga till styling där det behövs (se [Card_link](#card_link)). 
+
+## Mockdata
+För att underlätta testning och utveckling använder applikationen en mockad lista med 1000 hotell, som definieras i filen [mockdata.ts](/examen_frontend/src/Hotels/MockData/mockdata.ts). Detta innebär att hotellen inte är verkliga, utan används som platsfyllnad så att utvecklarna kan testa applikationen utan att manuellt behöva lägga till varje enskilt hotell. 
+Vi har valt att använda mockdata för att snabbt kunna återge realistiska scenarion med större datamängder, samt underlätta arbetet när det kommer till komponenttestning.
+
+## UseState
+*useState* är en React-hook som gör det möjligt för funktionella komponenter att hantera tillstånd, vilket gör dem mer dynamiska och interaktiva. När *useState* används tillsammans med TypeScript får du dessutom typsäkerhet, vilket förbättrar utvecklarupplevelsen genom att fel upptäcks tidigt i utvecklingsprocessen.
+
+Hooken returnerar två saker: ett tillståndsvärde och en funktion för att uppdatera detta värde. Här är ett exempel på hur det kan se ut:
+```ts
+  const [hotels, setHotels] = useState<Hotel[]>([]);
+```
+
+För att uppdatera tillståndet anropar du funktionen som returnerats av hooken – i detta fall *setHotels*. Denna funktion kan antingen ta ett nytt värde direkt, eller en funktion som i sin tur tar emot det tidigare tillståndet och returnerar det uppdaterade värdet. Detta är särskilt användbart när den nya tillståndsvarianten beror på den tidigare.
+```ts
+  const handleCreateHotel = async (newHotel: NewHotel) => {
+    const created = await createHotel(newHotel.name);
+    setHotels((prev) => [...prev, created]);
+    setModalOpen(false);
+  };
+```
+Tänk på att tillståndsuppdateringar i React är asynkrona och kan batchas för bättre prestanda. Det innebär att ett tillståndsvärde inte nödvändigtvis är uppdaterat direkt efter att du anropat *setState*. Därför är det rekommenderat att använda funktionsformen för att uppdatera tillstånd när det nya värdet beror på det tidigare.
+
+## UseEffect
+Hooken useEffect i React används för att utföra sidoeffekter i funktionskomponenter. Den ersätter de traditionella livscykelmetoderna componentDidMount, componentDidUpdate och componentWillUnmount som tidigare användes i klasskomponenter. Detta förändrades i och med introduktionen av Hooks i React version 16.8.
+
+* Det första argumentet till useEffect är en funktion där du placerar koden för din sidoeffekt.
+* Det andra argumentet är en valfri array med beroenden. Effekten körs varje gång något av dessa beroenden förändras. Om du inte anger några beroenden, körs effekten efter varje render.
+
+Ett vanligt användningsområde för useEffect är att hämta data när en komponent monteras. Genom att skicka en tom array [] som beroendelista körs effekten endast en gång, direkt efter den första renderingen – vilket motsvarar componentDidMount i klasskomponenter.
+
+Här är ett exempel där data hämtas från en API-endpoint:
+```ts
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const tenant = localStorage.getItem("tenant");
+
+    fetch(`${BASE_URL}/hotels`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "X-Tenant": `${tenant}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => setHotels(data.data));
+  }, []);
+```
+
+UseEffect kan även användas som en clean-up-funktion. 
+Den utför då rensningsuppgifter som att avsluta prenumerationer på händelser eller avbryta asynkrona uppgifter.
+```ts
+useEffect(() => {
+  const subscription = someObservable.subscribe();
+  
+  return () => {
+    subscription.unsubscribe();
+  };
+}, []);
+```
