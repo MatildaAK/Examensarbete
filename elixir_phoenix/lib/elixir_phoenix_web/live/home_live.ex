@@ -8,7 +8,7 @@ defmodule ElixirPhoenixWeb.HomeLive do
     ~H"""
     <.container class="my-6">
       <section class="grid grid-cols-1 gap-y-6 sm:grid-cols-3 sm:gap-x-4">
-        <.card_link navigate={~p"/#"}>
+        <.card_link navigate={~p"/users"}>
           <.icon name="hero-users" class="h-16 w-16" /> Users
         </.card_link>
         <.card_link navigate={~p"/#"}>
