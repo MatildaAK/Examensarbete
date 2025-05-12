@@ -59,6 +59,7 @@ defmodule ElixirPhoenixWeb.Router do
       live "/hotels/:id/edit", HotelLive.HotelShow, :edit
 
       live "/hotel_rooms", HotelRoomLive.HotelRoomList, :index
+      live "/hotel_rooms_1000", HotelRoomLive.HotelRoomList1000, :index
       live "/hotel_rooms/new", HotelRoomLive.HotelRoomList, :new
       live "/hotel_rooms/:id", HotelRoomLive.HotelRoomShow, :show
       live "/hotel_rooms/:id/edit", HotelRoomLive.HotelRoomShow, :edit
