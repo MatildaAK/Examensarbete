@@ -88,18 +88,6 @@ defmodule ElixirPhoenixWeb.UserLive.UserShow do
     |> push_navigate(to: ~p"/users")}
   end
 
-  @impl true
-  def handle_event("delete", %{"id" => id}, socket) do
-    user = Users.get_user!(id, [prefix: socket.assigns.tenant])
-    {:ok, _} = Users.delete_user(user, [prefix: socket.assigns.tenant])
-
-    {:noreply,
-    socket
-    |> assign(:users, user)
-    |> put_flash(:info, "User #{user.name} deleted successfully.")
-    |> push_navigate(to: ~p"/users")}
-  end
-
   defp page_title(:show), do: "Show User"
   defp page_title(:edit), do: "Edit User"
 end
