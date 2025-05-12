@@ -1,6 +1,6 @@
 defmodule ElixirPhoenix.Hotels.HotelRoom do
   @moduledoc false
-  use Ecto.Schema
+  use ElixirPhoenix.Schema
 
   import Ecto.Changeset
 
