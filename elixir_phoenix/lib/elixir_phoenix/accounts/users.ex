@@ -123,7 +123,7 @@ defmodule ElixirPhoenix.Accounts.Users do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_user_password(user, password, attrs, opts \\ []) do
+  def update_user_password(user, _password, attrs, opts \\ []) do
     changeset =
       user
       |> User.password_changeset(attrs)

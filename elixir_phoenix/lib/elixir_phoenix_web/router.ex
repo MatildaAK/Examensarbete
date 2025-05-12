@@ -46,7 +46,7 @@ defmodule ElixirPhoenixWeb.Router do
     live_session :require_authenticated_user,
       on_mount: [{ElixirPhoenixWeb.UserAuth, :ensure_authenticated}] do
       live "/", HomeLive
-      live "/users/settings", UserSettingsLive, :edit
+      # live "/users/settings", UserSettingsLive, :edit
 
       live "/users", UserLive.UserList, :index
       live "/users/new", UserLive.UserList, :new
