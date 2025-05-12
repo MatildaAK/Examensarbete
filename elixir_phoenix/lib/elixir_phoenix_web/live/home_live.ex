@@ -11,10 +11,10 @@ defmodule ElixirPhoenixWeb.HomeLive do
         <.card_link navigate={~p"/users"}>
           <.icon name="hero-users" class="h-16 w-16" /> Users
         </.card_link>
-        <.card_link navigate={~p"/#"}>
+        <.card_link navigate={~p"/hotels"}>
           <.icon name="hero-home-modern" class="h-16 w-16" /> Hotels
         </.card_link>
-        <.card_link navigate={~p"/#"}>
+        <.card_link navigate={~p"/hotel_rooms"}>
           <.icon name="hero-building-office-2" class="h-16 w-16" /> Hotel Rooms
         </.card_link>
       </section>
@@ -23,8 +23,6 @@ defmodule ElixirPhoenixWeb.HomeLive do
   end
 
   def mount(_params, _session, socket) do
-    # Phoenix.PubSub.subscribe(Qh.PubSub, "time")
-    # socket = assign(socket, :title, Titles.day_date_time())
     {:ok, assign(socket, :title, "Welcome!")}
   end
 
