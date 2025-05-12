@@ -76,8 +76,8 @@ defmodule ElixirPhoenix.MixProject do
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
       "assets.build": ["tailwind elixir_phoenix", "esbuild elixir_phoenix"],
       "assets.deploy": [
-        "tailwind elixir_phoenix --minify",
-        "esbuild elixir_phoenix --minify",
+        "tailwind default --minify",
+        "esbuild default --minify",
         "phx.digest"
       ]
     ]
