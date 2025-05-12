@@ -1,6 +1,6 @@
 1. Börja med att klona ned projektet
 2. Öppna terminalen och gå till rätt "path"
-    * För React - Elixi r- Phoenix LiveView: cd examen_frontend och cd examen_backend
+    * För React - Elixir - Phoenix LiveView: cd examen_frontend och cd examen_backend
     * För Elixir och Phoenix LiveView: cd elixir_phoenix. Fortsätt sedan från steget **Starta projektet i backend**
 3. Installera projektets dependencies
 4. Starta server
