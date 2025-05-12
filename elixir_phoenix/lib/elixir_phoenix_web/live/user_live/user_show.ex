@@ -10,7 +10,7 @@ defmodule ElixirPhoenixWeb.UserLive.UserShow do
     <.container class="my-6">
 
       <div class="mb-8">
-        <.back navigate={~p"/admin/users"}>Back to users</.back>
+        <.back navigate={~p"/users"}>Back to users</.back>
       </div>
 
       <.header>
@@ -35,7 +35,7 @@ defmodule ElixirPhoenixWeb.UserLive.UserShow do
               </button>
             </div>
             <div>
-              <.link patch={~p"/admin/users/#{@user}/edit"} phx-click={JS.push_focus()}>
+              <.link patch={~p"/users/#{@user}/edit"} phx-click={JS.push_focus()}>
                 <.button>Edit</.button>
               </.link>
             </div>
@@ -47,7 +47,7 @@ defmodule ElixirPhoenixWeb.UserLive.UserShow do
       :if={@live_action == :edit}
         id="user-modal"
         show
-        on_cancel={JS.patch(~p"/admin/users/#{@user}")}
+        on_cancel={JS.patch(~p"/users/#{@user}")}
       >
         <.live_component
           module={ElixirPhoenixWeb.UserLive.UserSettings}
@@ -56,7 +56,7 @@ defmodule ElixirPhoenixWeb.UserLive.UserShow do
           title={@page_title}
           action={@live_action}
           user={@user}
-          patch={~p"/admin/users/#{@user}"}
+          patch={~p"/users/#{@user}"}
         />
       </.modal>
     </.container>
@@ -85,7 +85,7 @@ defmodule ElixirPhoenixWeb.UserLive.UserShow do
     socket
     |> assign(:users, user)
     |> put_flash(:info, "User #{user.name} deleted successfully.")
-    |> push_navigate(to: ~p"/admin/users")}
+    |> push_navigate(to: ~p"/users")}
   end
 
   @impl true
@@ -97,7 +97,7 @@ defmodule ElixirPhoenixWeb.UserLive.UserShow do
     socket
     |> assign(:users, user)
     |> put_flash(:info, "User #{user.name} deleted successfully.")
-    |> push_navigate(to: ~p"/admin/users")}
+    |> push_navigate(to: ~p"/users")}
   end
 
   defp page_title(:show), do: "Show User"
