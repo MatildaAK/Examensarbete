@@ -74,7 +74,7 @@ defmodule ElixirPhoenix.MixProject do
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
-      "assets.build": ["tailwind elixir_phoenix", "esbuild elixir_phoenix"],
+      "assets.build": ["tailwind default", "esbuild default"],
       "assets.deploy": [
         "tailwind default --minify",
         "esbuild default --minify",
