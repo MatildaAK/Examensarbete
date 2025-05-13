@@ -1,0 +1,90 @@
+/*
+ * Legal Disclaimer for App licence
+ *
+ * Licence to use fonts in native, web or hybrid apps, on stationary, mobile or built-in devices like.
+ *
+ * Should the license download limit be exceeded the license holder will be required to contact Lineto.com for an upgrade.
+ * 
+ * It is strictly prohibited to rename the font and to download or use these fonts in any other media. 
+ * 
+ * These Web fonts are licensed exclusively for the use on the following App(s):
+ *
+ * For web app: QSimbo
+ * Domain name: www.qsimbo.com
+ *  For <1000 active users
+ *
+ */
+
+/*
+ * Legal Disclaimer for Online Advertising licence
+ *
+ * Licence to use fonts in advertising on websites and mobile platforms such as banners, pop-ups, floating ads, video ads, HTML5 ads, eMail newsletters etc.
+ *
+ * It is strictly prohibited to rename the font and to download or use these fonts in any other media. 
+ * 
+ * These fonts are licensed exclusively for:
+ *
+ * Static or dynamic online advertising
+ * For up to 10k monthly ad impressions
+ *
+ */
+
+/* complete */
+
+@font-face {
+  font-family: "BrauerLLWeb-Black";
+  src: url("fonts/Brauer/BrauerLLWeb-Black.woff") format("woff");
+}
+
+@font-face {
+  font-family: "BrauerLLWeb-Black";
+  src: url("fonts/Brauer/BrauerLLWeb-Black.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "BrauerLLWeb-Italic";
+  src: url("fonts/Brauer/BrauerLLWeb-Italic.woff") format("woff");
+}
+
+@font-face {
+  font-family: "BrauerLLWeb-Italic";
+  src: url("fonts/Brauer/BrauerLLWeb-Italic.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "BrauerLLWeb-Regular";
+  src: url("fonts/Brauer/BrauerLLWeb-Regular.woff") format("woff");
+}
+
+@font-face {
+  font-family: "BrauerLLWeb-Regular";
+  src: url("fonts/Brauer/BrauerLLWeb-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "BrauerLLWeb-Bold";
+  src: url("fonts/Brauer/BrauerLLWeb-Bold.woff") format("woff");
+}
+
+@font-face {
+  font-family: "BrauerLLWeb-Bold";
+  src: url("fonts/Brauer/BrauerLLWeb-Bold.woff2") format("woff2");
+}
+
+/* Font Proxima Nova */
+
+@font-face {
+  font-family: 'proxima_nova_condensedregular';
+  src: url('fonts/Proxima/proximanovacond-regular-webfont.woff2') format('woff2'),
+       url('fonts/Proxima/proximanovacond-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'proxima_nova_condensedRgIt';
+  src: url('fonts/Proxima/proximanovacond-regularit-webfont.woff2') format('woff2'),
+       url('fonts/Proxima/proximanovacond-regularit-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}

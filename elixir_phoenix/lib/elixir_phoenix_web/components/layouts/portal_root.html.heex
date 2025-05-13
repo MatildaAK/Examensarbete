@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang={"en"} class="[scrollbar-gutter:stable]">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="csrf-token" content={get_csrf_token()} />
+    <.live_title suffix=" · Phoenix Framework">
+      {assigns[:page_title] || "Qh"}
+    </.live_title>
+    <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
+    <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.1/dist/index.umd.min.js">
+    </script>
+  </head>
+  <body class="font-proxima bg-background text-foreground flex h-screen flex-col text-base antialiased">
+    <header class="flex flex-col items-center">
+      <.link class="mt-6 w-fit mb-8" navigate={~p"/"}>
+        <.qsimbo_logo class="h-20" />
+      </.link>
+    </header>
+
+    {@inner_content}
+
+    <.footer current_user={@current_user}></.footer>
+  </body>
+</html>
