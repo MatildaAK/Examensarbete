@@ -13,8 +13,9 @@ Vi försöker att följa samma struktur och användar sett som vi har gjorti QH 
 7. [BCrypt](#bcrypt)
 8. [CLSX](#clsx)
 9. [Mockdata](#mockdata)
-10. [UseState](#useState)
-11. [UseEffect](#useEffect)
+10. [Seeds](£seeds)
+11. [UseState](#useState)
+12. [UseEffect](#useEffect)
 
 Vi har byggt Våran React applikation baserat på det vi har i Elixir / Phoenix LiveView, så den består av olika komponenter som vi kan använda på flera ställen. Detta för att försöka minska duppliceringen av kod. Vi använder oss av komponenter och props för att vi har arbetat med tidigare och tycker det är smidit och när projektet växer är det smidigt att kunna använda samma kod på flera ställen ett att behöva dupplicera koden på alla ställen där det används.
 
@@ -411,6 +412,58 @@ Eller som i vårat fall att vi använder det för att kunna lägga till styling 
 ## Mockdata
 För att underlätta testning och utveckling använder applikationen en mockad lista med 1000 hotell, som definieras i filen [mockdata.ts](/examen_frontend/src/Hotels/MockData/mockdata.ts). Detta innebär att hotellen inte är verkliga, utan används som platsfyllnad så att utvecklarna kan testa applikationen utan att manuellt behöva lägga till varje enskilt hotell. 
 Vi har valt att använda mockdata för att snabbt kunna återge realistiska scenarion med större datamängder, samt underlätta arbetet när det kommer till komponenttestning.
+
+## Seeds
+
+Detta avsnitt förklarar hur man importerar hotellrum till databasen för ett specifikt tenant-schema och hur man enkelt kan ta bort dem vid behov. Ett seed-script läser in, transformerar och lagrar data — i detta fall hotellrum — i rätt tenant-schema i databasen. Denna data kan ses som en typ av mockad data, används för att snabbt och effektivt fylla systemet med realistiska testvärden.
+Vi har valt att lägga in detta för både 10 och 1000 rum. Se [notes](/elixir_phoenix/notes.md) för alla kommandon.
+
+Projektet är organiserat enligt följande:
+```sh
+priv/
+  repo/
+    seeds/
+      add_prefix_to_10_rooms.exs        # Skript för att lägga in rum i databasen
+      delete_seeded_rooms.exs          # Skript för att radera rummen
+    data/
+      10_rooms_seed.json                   # Ursprunglig JSON med rum
+      10_hotel_rooms_with_prefix.json     # Uppdaterad JSON med tenant-prefix
+```
+
+1. Lägg till prefix_tenant till rummen
+
+Kör detta för att uppdatera 10_room_seed.json och skapa en ny fil med tenant-id (ex: 100006):
+
+
+```elixir
+body = File.read!("priv/repo/data/10_rooms_seed.json")
+rooms = Jason.decode(body)
+
+updated_rooms =
+  Enum.map(rooms, fn room ->
+    Map.put(room, "prefix_tenant", "100006")
+  end)
+
+File.write!("priv/repo/data/10_hotel_rooms_with_prefix.json", Jason.encode!(updated_rooms, pretty: true))
+```
+Obs: ändra "100006" till det schema du vill importera till.
+
+2. Lägg in rummen i databasen
+
+Kör detta kommando för att lägga in alla rum i tenant-schemat 100006:
+
+```sh
+mix run priv/repo/seeds/add_prefix_to_10_rooms.exs
+```
+Det här läser in filen 10_hotel_rooms_with_prefix.json och lägger in rummen i rätt schema baserat på prefix_tenant.
+
+3. Radera alla rum från ett schema
+Om du vill ta bort alla rum från t.ex. schema 100006, kör:
+
+```sh
+mix run priv/repo/seeds/delete_seeded_rooms.exs
+```
+Detta kör Repo.delete_all/2 för HotelRoom i rätt schema.
 
 ## UseState
 *useState* är en React-hook som gör det möjligt för funktionella komponenter att hantera tillstånd, vilket gör dem mer dynamiska och interaktiva. När *useState* används tillsammans med TypeScript får du dessutom typsäkerhet, vilket förbättrar utvecklarupplevelsen genom att fel upptäcks tidigt i utvecklingsprocessen.

@@ -17,9 +17,9 @@ defmodule ElixirPhoenixWeb.HomeLive do
         <.card_link navigate={~p"/hotel_rooms"}>
           <.icon name="hero-building-office-2" class="h-16 w-16" /> Hotel Rooms
         </.card_link>
-        <.card_link navigate={~p"/hotel_rooms_1000"}>
+        <%!-- <.card_link navigate={~p"/hotel_rooms_1000"}>
           <.icon name="hero-building-office-2" class="h-16 w-16" /> Hotel Rooms 1000
-        </.card_link>
+        </.card_link> --%>
       </section>
     </.container>
     """
