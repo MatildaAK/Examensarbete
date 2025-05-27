@@ -1,0 +1,62 @@
+[
+    {
+        "id": "5cbb5f21-fe08-4818-944e-e0ea9ab60634",
+        "name": "Room-1190",
+        "size": "60",
+        "hotel_id": "902c0299-a821-478d-bcc0-fbf6ed99011a"
+    },
+    {
+        "id": "1f6928bf-cc03-42c8-929b-424fe4ae6c09",
+        "name": "Room-6368",
+        "size": "20",
+        "hotel_id": "64952cce-7fd3-4801-a76e-7addbcc5666c"
+    },
+    {
+        "id": "07971f20-6b07-4095-88e4-9be7e5cb7691",
+        "name": "Room-1595",
+        "size": "25",
+        "hotel_id": "64952cce-7fd3-4801-a76e-7addbcc5666c"
+    },
+    {
+        "id": "1c56ecff-6f37-49fd-8ae8-18d158478bd9",
+        "name": "Room-1219",
+        "size": "20",
+        "hotel_id": "9e1a1252-608f-4a4d-92f2-02b7d7c8bd68"
+    },
+    {
+        "id": "9921a437-cfb8-4926-a476-66420b10da76",
+        "name": "Room-6345",
+        "size": "60",
+        "hotel_id": "b556d36d-21ca-4d45-938b-b5ed3eeecf00"
+    },
+    {
+        "id": "5e3b254f-d272-4916-816b-063939dcd895",
+        "name": "Room-7776",
+        "size": "25",
+        "hotel_id": "b556d36d-21ca-4d45-938b-b5ed3eeecf00"
+    },
+    {
+        "id": "18fb4a69-874f-40fe-9e0e-1d8fd49f63eb",
+        "name": "Room-5397",
+        "size": "20",
+        "hotel_id": "9e1a1252-608f-4a4d-92f2-02b7d7c8bd68"
+    },
+    {
+        "id": "78c8e56c-f107-4819-a558-3ae45662fdb1",
+        "name": "Room-1290",
+        "size": "40",
+        "hotel_id": "a6b29018-30e9-4141-9a69-11ec06d37475"
+    },
+    {
+        "id": "7e1db9b5-5460-4315-8eb2-d48b3a7d91a5",
+        "name": "Room-8375",
+        "size": "35",
+        "hotel_id": "902c0299-a821-478d-bcc0-fbf6ed99011a"
+    },
+    {
+        "id": "1019b937-7d09-4fa6-bd19-d6ee3f5d9aa9",
+        "name": "Room-5180",
+        "size": "20",
+        "hotel_id": "c1a5fbc9-cc77-4d2a-a334-1f64c462107f"
+    }
+]
