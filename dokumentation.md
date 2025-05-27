@@ -13,7 +13,7 @@ Vi försöker att följa samma struktur och användar sett som vi har gjorti QH 
 7. [BCrypt](#bcrypt)
 8. [CLSX](#clsx)
 9. [Mockdata](#mockdata)
-10. [Seeds](£seeds)
+10. [Seeds](#seeds)
 11. [UseState](#useState)
 12. [UseEffect](#useEffect)
 
