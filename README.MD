@@ -58,6 +58,7 @@ ExamenBackend.Users.create_user(%{user_name: "Lisa", email: "info@test.com", nam
 6. Logga in med användarnamn@prefix och lösenord
 
 7. Lägg till rum till databasen (mockdata)
+
 Har prefix: *100006* som default, så lägger man till en till tenant, ändra även i seeds/add_prefix_to_10_rooms.ex, seeds/add_prefix_to_1000_rooms.ex och seeds/delete_seeded_rooms.ex
 
 10 rum:
