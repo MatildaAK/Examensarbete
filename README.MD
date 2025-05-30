@@ -8,7 +8,6 @@
 6. Logga in
 7. Lägg till rum i databasen (mockdata)
 
-
 ## Starta projekt i **Frontend** (React):
 
 För att starta projektet behöver man i **frontend**:
@@ -23,25 +22,31 @@ npm run dev
 ```
 
 ## Starta projektet i **Backend**:
-1. Installera dependencies 
+
+(Alla *mix*-kommandon körs i en separat terminal där ingen server körs)
+
+1. Installera beroenden: 
 
 ```elixir
 mix deps.get
 ```
 
-2. Skapa databas koppling med:
+2. Skapa databaskoppling:
 ```elixir
 mix ecto.create
 ```
 
-3. Setup och Migrera databasen
+3. Setup och Migrera databasen:
+
+(*Tenant namnet behöver vara sex siffror*)
+
 ```elixir
 mix setup.tenant 100006
 
 mix migrate.tenant 100006
 ```
 
-4. Starta Phoenix endpoint:
+4. Starta Phoenix-endpoint:
 ```elixir
 iex -S mix phx.server
 ```
@@ -59,25 +64,25 @@ ExamenBackend.Users.create_user(%{user_name: "Lisa", email: "info@test.com", nam
 
 7. Lägg till rum till databasen (mockdata)
 
-Har prefix: *100006* som default, så lägger man till en till tenant, ändra även i [add_prefix_to_10_rooms](priv/repo/seeds/add_prefix_to_10_rooms.exs), [add_prefix_to_1000_rooms](priv/repo/seeds/add_prefix_to_1000_rooms.exs) och [delete_seeded_rooms](priv/repo/seeds/delete_seeded_rooms.exs)
+Har prefix: *100006* som default, så lägger man till en till tenant eller valt ett annat namn, ändra även i *add_prefix_to_10_rooms.exs*, *add_prefix_to_1000_rooms.exs* och *delete_seeded_rooms.exs* som ligger i mappen priv/repo/seeds.
 
 10 rum:
-```bash
+```elixir
 mix run priv/repo/seeds/add_prefix_to_10_rooms.exs
 ``` 
-```bash
+```elixir
 mix run priv/repo/seeds/seeds_10.exs
 ```
 1000 rum:
-```bash
+```elixir
 mix run priv/repo/seeds/add_prefix_to_1000_rooms.exs
 ``` 
-```bash
+```elixir
 mix run priv/repo/seeds/seeds_1000.exs
 ```
 
 Radera alla rum:
-```bash
+```elixir
 mix run priv/repo/seeds/delete_seeded_rooms.exs
 ```
 
