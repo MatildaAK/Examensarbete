@@ -59,7 +59,7 @@ ExamenBackend.Users.create_user(%{user_name: "Lisa", email: "info@test.com", nam
 
 7. Lägg till rum till databasen (mockdata)
 
-Har prefix: *100006* som default, så lägger man till en till tenant, ändra även i seeds/add_prefix_to_10_rooms.ex, seeds/add_prefix_to_1000_rooms.ex och seeds/delete_seeded_rooms.ex
+Har prefix: *100006* som default, så lägger man till en till tenant, ändra även i [add_prefix_to_10_rooms](priv/repo/seeds/add_prefix_to_10_rooms.exs), [add_prefix_to_1000_rooms](priv/repo/seeds/add_prefix_to_1000_rooms.exs) och [delete_seeded_rooms](priv/repo/seeds/delete_seeded_rooms.exs)
 
 10 rum:
 ```bash
