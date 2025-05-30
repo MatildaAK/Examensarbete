@@ -36,9 +36,9 @@ mix ecto.create
 
 3. Setup och Migrera databasen
 ```elixir
-mix setup.tenant 100002
+mix setup.tenant 100006
 
-mix migrate.tenant 100002
+mix migrate.tenant 100006
 ```
 
 4. Starta Phoenix endpoint:
@@ -52,12 +52,14 @@ iex.bat -S mix phx.server
 
 5. Skapa användare:
 ```elixir
-ExamenBackend.Users.create_user(%{user_name: "Lisa", email: "info@test.com", name: "Lisa", password: "Password123!"}, [prefix: "100002"])
+ExamenBackend.Users.create_user(%{user_name: "Lisa", email: "info@test.com", name: "Lisa", password: "Password123!"}, [prefix: "100006"])
 ```
 
 6. Logga in med användarnamn@prefix och lösenord
 
 7. Lägg till rum till databasen (mockdata)
+Har prefix: *100006* som default, så lägger man till en till tenant, ändra även i seeds/add_prefix_to_10_rooms.ex, seeds/add_prefix_to_1000_rooms.ex och seeds/delete_seeded_rooms.ex
+
 10 rum:
 ```bash
 mix run priv/repo/seeds/add_prefix_to_10_rooms.exs
@@ -78,4 +80,4 @@ Radera alla rum:
 mix run priv/repo/seeds/delete_seeded_rooms.exs
 ```
 
-Skulle du få problem med NMake, se [BCrypt](/dokumentation.md)
+Skulle man få problem med NMake, se [BCrypt](/dokumentation.md)
